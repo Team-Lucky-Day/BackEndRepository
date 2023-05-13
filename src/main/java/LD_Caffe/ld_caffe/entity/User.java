@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -13,10 +14,16 @@ import javax.persistence.Id;
 @Getter
 public class User {
     @Id
+    @Column(nullable = false)
     private String u_id;
+    @Column(nullable = false)
     private String u_pw;
+    @Column(nullable = false)
     private String u_name;
-    private int u_phone;
+    @Column(nullable = false)
+    private String u_phone;
+    @Column(nullable = false)
     private String u_email;
-    private int c_number;
+    @Column
+    private Integer c_number;
 }
