@@ -16,14 +16,19 @@ public class User {
     @Id
     @Column(nullable = false)
     private String u_id;
+
     @Column(nullable = false)
     private String u_pw;
+
     @Column(nullable = false)
     private String u_name;
+
     @Column(nullable = false)
     private String u_phone;
+
     @Column(nullable = false)
     private String u_email;
+
     @Column
     private Integer c_number;
 }

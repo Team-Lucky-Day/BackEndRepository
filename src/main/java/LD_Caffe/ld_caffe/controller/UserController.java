@@ -19,10 +19,9 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/all")  // 모든 유저 조회 메서드
+    @GetMapping("/list")  // 모든 유저 조회 메서드
     public String findAllUser(Model model){
-        List<User> userList = userService.findAllUser();
-        model.addAttribute("userList",userList);
+        model.addAttribute("userList",userService.findAllUser());
         return "userList";
     }
 
