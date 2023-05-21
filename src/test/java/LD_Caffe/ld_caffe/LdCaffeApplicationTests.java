@@ -7,7 +7,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 class LdCaffeApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void delete() {
+
+
 	}
 
 }
