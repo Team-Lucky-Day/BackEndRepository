@@ -1,6 +1,7 @@
 package LD_Caffe.ld_caffe.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Builder
 public class User {
     @Id
     @Column(nullable = false)

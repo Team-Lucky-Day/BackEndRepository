@@ -1,5 +1,6 @@
 package LD_Caffe.ld_caffe.service;
 
+import LD_Caffe.ld_caffe.dto.UserDTO;
 import LD_Caffe.ld_caffe.entity.User;
 import LD_Caffe.ld_caffe.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,5 +20,10 @@ public class UserService {
 
     public Optional<User> findUserById(String u_id){  // Repository 의 findById 로 ID값으로 유저 조회
         return userRepository.findById(u_id);
+    }
+
+    public void saveUser(UserDTO userDTO){
+        User user = userDTO.toEntity(userDTO);
+        userRepository.save(user);
     }
 }

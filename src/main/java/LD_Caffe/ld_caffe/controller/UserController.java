@@ -1,13 +1,12 @@
 package LD_Caffe.ld_caffe.controller;
 
+import LD_Caffe.ld_caffe.dto.UserDTO;
 import LD_Caffe.ld_caffe.entity.User;
 import LD_Caffe.ld_caffe.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +29,13 @@ public class UserController {
         Optional<User> user = userService.findUserById(u_id);
         model.addAttribute("user",user.get());
         return "userInfo";
+    }
+
+    @PostMapping("/signup")
+    @CrossOrigin(origins = "http://localhost:3000/")
+    public String signUpUser(@RequestBody UserDTO userDTO){
+        userService.saveUser(userDTO);
+        return "";
     }
 
 }
