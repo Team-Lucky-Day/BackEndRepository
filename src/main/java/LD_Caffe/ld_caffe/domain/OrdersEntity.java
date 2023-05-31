@@ -8,12 +8,14 @@ import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.sql.Date;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Table(name = "orders")
 public class OrdersEntity {
 
     @Id

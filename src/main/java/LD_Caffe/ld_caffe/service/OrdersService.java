@@ -1,6 +1,6 @@
 package LD_Caffe.ld_caffe.service;
 
-import LD_Caffe.ld_caffe.entity.Orders;
+import LD_Caffe.ld_caffe.domain.OrdersEntity;
 import LD_Caffe.ld_caffe.repository.OrdersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,11 +14,11 @@ public class OrdersService {
 
     private final OrdersRepository ordersRepository;
 
-    public List<Orders> allOrders(){
+    public List<OrdersEntity> allOrders(){
         return ordersRepository.findAll();
     }
 
-    public Optional<Orders> findOrderById(int i){
+    public Optional<OrdersEntity> findOrderById(int i){
         return ordersRepository.findById(i);
     }
 

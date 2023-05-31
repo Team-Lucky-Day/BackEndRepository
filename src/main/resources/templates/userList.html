@@ -13,7 +13,7 @@
     </thead>
     <tbody>
     <tr th:each="user : ${userList}">
-        <td ><a th:href="@{'/user/' + ${user.u_id}}"><span th:text="${user.u_name}" ></span></a></td>
+        <td ><a th:href="@{'/user/' + ${user.userId}}"><span th:text="${user.userName}" ></span></a></td>
     </tr>
     </tbody>
 </table>

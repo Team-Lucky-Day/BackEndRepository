@@ -1,6 +1,6 @@
 package LD_Caffe.ld_caffe.controller;
 
-import LD_Caffe.ld_caffe.entity.Orders;
+import LD_Caffe.ld_caffe.domain.OrdersEntity;
 import LD_Caffe.ld_caffe.repository.UserRepository;
 import LD_Caffe.ld_caffe.service.OrdersService;
 import LD_Caffe.ld_caffe.service.UserService;
@@ -31,7 +31,7 @@ public class OrdersController {
 
     @GetMapping("/{o_code}")  // 주문 상세 조회
     public String showOrderDetail(@PathVariable("o_code") int o_code, Model model){
-        Orders order = ordersService.findOrderById(o_code).get();
+        OrdersEntity order = ordersService.findOrderById(o_code).get();
         model.addAttribute("order",order);
         model.addAttribute("user",userService.findUserById(order.getU_id()).get());
         return "orderDetail";
