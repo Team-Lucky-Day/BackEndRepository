@@ -1,4 +1,4 @@
-package LD_Caffe.ld_caffe.Entity;
+package LD_Caffe.ld_caffe.entity;
 
 import lombok.Data;
 

@@ -1,6 +1,6 @@
-package LD_Caffe.ld_caffe.Repository;
+package LD_Caffe.ld_caffe.repository;
 
-import LD_Caffe.ld_caffe.Entity.tables;
+import LD_Caffe.ld_caffe.entity.tables;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

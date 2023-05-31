@@ -1,8 +1,8 @@
-package LD_Caffe.ld_caffe.Service;
+package LD_Caffe.ld_caffe.service;
 
 
-import LD_Caffe.ld_caffe.Entity.tables;
-import LD_Caffe.ld_caffe.Repository.TablesRepository;
+import LD_Caffe.ld_caffe.entity.tables;
+import LD_Caffe.ld_caffe.repository.TablesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
