@@ -1,9 +1,7 @@
 package LD_Caffe.ld_caffe.domain;
 
 import LD_Caffe.ld_caffe.dto.UserDto;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +11,9 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Entity
-@Table(name =" user")
+@Table(name ="user")
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class UserEntity {
 
