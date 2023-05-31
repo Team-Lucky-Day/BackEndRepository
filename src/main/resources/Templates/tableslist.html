@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>자리 예약 시스템</title>
+</head>
+<body>
+
+<div class="layout">
+
+  <table>
+    <thead>
+    <tr>
+      <th>좌석 번호</th>
+      <th>사용 유무</th>
+      <th>수용 인원</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="tables, state : ${list}">
+      <td th:text="${tables.t_code}">Null</td>
+      <td th:text="${tables.t_use}">Null</td>
+      <td th:text="${tables.t_headcount}">Null</td>
+      <td th:text="${colors[state.index]}">Null</td>
+        <td th:style="'background-color: ' + ${colors[state.index]} +';width:10px;height:10px;'"></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>

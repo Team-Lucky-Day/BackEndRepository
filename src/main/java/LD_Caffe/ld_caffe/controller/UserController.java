@@ -8,6 +8,8 @@ import LD_Caffe.ld_caffe.dto.UserDto;
 import LD_Caffe.ld_caffe.repository.CardRepository;
 import LD_Caffe.ld_caffe.repository.UserRepository;
 import LD_Caffe.ld_caffe.service.UserInfoService;
+import LD_Caffe.ld_caffe.dto.UserDTO;
+import LD_Caffe.ld_caffe.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,7 +37,7 @@ public class UserController {
     public final CardRepository cardRepository;
     public final UserRepository userRepository;
 
-    @GetMapping("/all")  // 모든 유저 조회 메서드
+    @GetMapping("/list")  // 모든 유저 조회 메서드
     public String findAllUser(Model model){
         List<UserEntity> userList = userService.findAllUser();
         model.addAttribute("userList",userList);
@@ -47,6 +49,13 @@ public class UserController {
         Optional<UserEntity> user = userService.findUserById(u_id);
         model.addAttribute("user",user.get());
         return "userInfo";
+    }
+
+    @PostMapping("/signup")
+    @CrossOrigin(origins = "http://localhost:3000/")
+    public String signUpUser(@RequestBody UserDTO userDTO){
+        userService.saveUser(userDTO);
+        return "";
     }
 
 
