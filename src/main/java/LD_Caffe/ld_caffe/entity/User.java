@@ -32,5 +32,5 @@ public class User {
     private String u_email;
 
     @Column
-    private Integer c_number;
+    private String c_number;
 }

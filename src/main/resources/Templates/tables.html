@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>자리 예약 시스ssss템</title>
+</head>
+<body>
+
+    <div class="layout">
+        <talbe>
+            <thead>
+                <tr>
+                    <th>좌석 번호</th>
+                    <th>이용가능 여부</th>
+                    <th>이용가능 인원 수</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="tables : ${List}">
+                    <td th:text="${tables.t_code"></td>
+                    <td th:text="${tables.t_use"></td>
+                    <td th:text="${tables.t_headCount"></td>
+                </tr>
+            </tbody>
+        </talbe>
+    </div>
+
+
+</body>
+</html>
