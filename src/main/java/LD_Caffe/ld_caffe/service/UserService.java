@@ -22,8 +22,12 @@ public class UserService {
         return userRepository.findById(u_id);
     }
 
-    public void saveUser(UserDTO userDTO){
-        User user = userDTO.toEntity(userDTO);
+    public void saveUser(UserDTO userDTO){  // 유저 저장 메서드
+        User user = userDTO.toEntity();
         userRepository.save(user);
+    }
+
+    public void deleteUser(String userId){
+        userRepository.delete(userRepository.findById(userId).get());
     }
 }

@@ -25,14 +25,14 @@ public class UserDTO {
 
     private Integer c_number;
 
-    public User toEntity(UserDTO userDTO){
+    public User toEntity(){
         return User.builder()
-                .u_id(userDTO.getU_id())
-                .u_pw(userDTO.getU_pw())
-                .u_name(userDTO.getU_name())
-                .u_email(userDTO.getU_email())
-                .u_phone(userDTO.getU_phone())
-                .c_number(userDTO.getC_number())
+                .u_id(this.getU_id())
+                .u_pw(this.getU_pw())
+                .u_name(this.getU_name())
+                .u_email(this.getU_email())
+                .u_phone(this.getU_phone())
+                .c_number(this.getC_number())
                 .build();
     }
 }
