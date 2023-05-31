@@ -25,5 +25,5 @@ public class User {
     @Column(nullable = false)
     private String u_email;
     @Column
-    private Integer c_number;
+    private String c_number;
 }
