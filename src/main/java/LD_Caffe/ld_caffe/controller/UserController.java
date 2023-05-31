@@ -8,18 +8,12 @@ import LD_Caffe.ld_caffe.dto.UserDto;
 import LD_Caffe.ld_caffe.repository.CardRepository;
 import LD_Caffe.ld_caffe.repository.UserRepository;
 import LD_Caffe.ld_caffe.service.UserInfoService;
-import LD_Caffe.ld_caffe.dto.UserDTO;
 import LD_Caffe.ld_caffe.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -53,7 +47,7 @@ public class UserController {
 
     @PostMapping("/signup")
     @CrossOrigin(origins = "http://localhost:3000/")
-    public String signUpUser(@RequestBody UserDTO userDTO){
+    public String signUpUser(@RequestBody UserDto userDTO){
         userService.saveUser(userDTO);
         return "";
     }
@@ -74,7 +68,7 @@ public class UserController {
 //      System.out.println(userData.get(0).getUserName());
 
        for (UserEntity u : userData ){
-           Integer cardNum = u.getUserCardNum();
+           String cardNum = u.getUserCardNum();
 //           System.out.println(cardNum);
            cardData.add(cardRepository.findByCardNumber(cardNum).get(0));
 
@@ -106,11 +100,11 @@ public class UserController {
         if (result.isPresent()){
 
             //Optional에서 카드 값만 가져오기
-            Integer cardNum = result.get().getUserCardNum();
+            String cardNum = result.get().getUserCardNum();
 
             //User테이블과 Card테이블에서 값 지우기
             userInfoService.DeleteUser(userId);
-            userInfoService.deleteCard((cardNum));
+            userInfoService.deleteCard(cardNum);
 
             System.out.println("UserId => " + userId + " (삭제완료!)");
 

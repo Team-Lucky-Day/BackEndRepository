@@ -1,6 +1,7 @@
 package LD_Caffe.ld_caffe.domain;
 
 import LD_Caffe.ld_caffe.dto.UserDto;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ import javax.persistence.Table;
 @Setter
 @Entity
 @Table(name =" user")
+@Builder
 public class UserEntity {
 
     @Id
@@ -32,20 +34,18 @@ public class UserEntity {
     private String userEmail;
 
     @Column(name = "c_number")
-    private Integer userCardNum;
-
-    public static UserEntity toUserEntity(UserDto userDto){
+    private String userCardNum;
 
 
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUserName(userDto.getUserName());
-        userEntity.setUserId(userDto.getUserId());
-        userEntity.setUserPassword(userDto.getUserPassword());
-        userEntity.setUserEmail(userDto.getUserEmail());
-        userEntity.setUserPhone(userDto.getUserPhone());
-        userEntity.setUserCardNum(userDto.getCardNum());
-        System.out.println("User dto->entity " + userEntity.getUserName());
-        return userEntity;
+    public static UserEntity toEntity(UserDto userDto){
+        return UserEntity.builder()
+                .userId(userDto.getU_id())
+                .userPassword(userDto.getU_pw())
+                .userCardNum(userDto.getC_number())
+                .userEmail(userDto.getU_email())
+                .userPhone(userDto.getU_phone())
+                .userName(userDto.getU_name())
+                .build();
     }
 
 

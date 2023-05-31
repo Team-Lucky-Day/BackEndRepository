@@ -25,7 +25,7 @@ public class UserInfoService {
         //1. dto -> entity 변환
         //2. 변환된 값 repository save 메서드를 통해 db에 저장(DB에는 entity객체로 넘겨야 한다.)
 
-        UserEntity userEntity = UserEntity.toUserEntity(userDto);
+        UserEntity userEntity = UserEntity.toEntity(userDto);
         System.out.println("User entity로 변환되고 저장준비 완료" + userEntity.getUserName());
         CardEntity cardEntity = CardEntity.toCardEntity(userDto);
         System.out.println("Card entity로 변환되고 저장준비 완료" + cardEntity);
@@ -46,7 +46,7 @@ public class UserInfoService {
         userRepository.deleteById(userId);
     }
 
-    public void deleteCard(Integer cardNum){
+    public void deleteCard(String cardNum){
         cardRepository.deleteById(cardNum);
     }
 

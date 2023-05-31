@@ -1,29 +1,36 @@
 package LD_Caffe.ld_caffe.dto;
 
-import lombok.*;
-import org.springframework.stereotype.Service;
+import LD_Caffe.ld_caffe.domain.UserEntity;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
 public class UserDto {
 
-    /*
-    * POST방식으로 오는 파라미터의 name과 일치해야 스프링에서 자동을 매칭해준다.
-    * */
+    private String u_id;
 
-    // User Information
-    private String userId;
-    private String userPassword;
-    private String userName;
-    private String userPhone;
-    private String userEmail;
+    private String u_pw;
 
-    // Card Information
-    private Integer cardNum;
+    private String u_name;
+
+    private String u_phone;
+
+    private String u_email;
+
+    private String c_number;
+
+    private String cardNum;
+
     private Integer cardPassword;
+
     private Integer cardCvc;
+
     private String cardDate;
+
 }

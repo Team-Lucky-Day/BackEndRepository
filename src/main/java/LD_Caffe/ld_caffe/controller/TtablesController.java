@@ -1,6 +1,6 @@
 package LD_Caffe.ld_caffe.controller;
 
-import LD_Caffe.ld_caffe.entity.tables;
+import LD_Caffe.ld_caffe.domain.TablesEntity;
 import LD_Caffe.ld_caffe.service.TablesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,11 +33,11 @@ public class TtablesController {
     @GetMapping("/table/list")
     public String tablesList(Model model) {
 
-        List<tables> result = tablesService.tablesList();
+        List<TablesEntity> result = tablesService.tablesList();
         List<String> colors = new ArrayList<>();
 
 
-        for(tables i : result){
+        for(TablesEntity i : result){
             Integer useNum = i.getT_use();
             if (useNum == 1){
                 colors.add("#FF0000");

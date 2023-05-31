@@ -9,10 +9,7 @@ import lombok.*;
 @ToString
 public class TestDto {
 
-    private Integer cardNum;
-    private Integer cardPassword;
-    private Integer cardCvc;
-    private String cardDate;
-
+    private Integer testNum;
+    private String testString;
 
 }

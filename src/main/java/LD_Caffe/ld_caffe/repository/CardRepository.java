@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CardRepository extends JpaRepository<CardEntity, Integer> {
+public interface CardRepository extends JpaRepository<CardEntity, String> {
 
 
 
-    List<CardEntity> findByCardNumber(Integer cardNumber);
+    List<CardEntity> findByCardNumber(String cardNumber);
 
 
 }

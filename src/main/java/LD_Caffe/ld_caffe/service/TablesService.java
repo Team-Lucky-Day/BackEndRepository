@@ -1,7 +1,7 @@
 package LD_Caffe.ld_caffe.service;
 
 
-import LD_Caffe.ld_caffe.entity.tables;
+import LD_Caffe.ld_caffe.domain.TablesEntity;
 import LD_Caffe.ld_caffe.repository.TablesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,18 +14,13 @@ public class TablesService {
     @Autowired
     private TablesRepository tablesRepository;
 
-    public void show(tables tables) {
+    public void show(TablesEntity tablesEntity) {
 
-        tablesRepository.save(tables);
-
+        tablesRepository.save(tablesEntity);
     }
 
-    public List<tables> tablesList() {
+    public List<TablesEntity> tablesList() {
 
         return tablesRepository.findAll();
-
-
-
-
     }
 }

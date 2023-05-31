@@ -1,17 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Test</title>
 </head>
 <body>
 
-  <form action="/test" method="post">
-      <input type="text" name="cardNum" placeholder="cardNum">
-      <input type="text" name="cardPassword" placeholder="password">
-      <input type="text" name="cardCvc" placeholder="CVC">
-      <input type="text" name="cardDate" placeholder="cardDate">
-      <input type="submit" value="제출">
-  </form>
+    <div th:each = "color, state : ${colors}">
+        <div th:style="'background-color: ' + ${color} +';width:10px;height:10px;'"></div>
+    </div>
+
 </body>
 </html>

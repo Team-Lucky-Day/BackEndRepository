@@ -1,7 +1,6 @@
 package LD_Caffe.ld_caffe;
 
-import LD_Caffe.ld_caffe.dto.UserDTO;
-import LD_Caffe.ld_caffe.entity.User;
+import LD_Caffe.ld_caffe.dto.UserDto;
 import LD_Caffe.ld_caffe.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,7 @@ class LdCaffeApplicationTests {
 
 	@Test
 	void userSignUp() {
-		UserDTO userDTO = new UserDTO();
+		UserDto userDTO = new UserDto();
 		userDTO.setU_name("test1");
 		userDTO.setU_id("testID1");
 		userDTO.setU_pw("testPW1");

@@ -1,7 +1,7 @@
 package LD_Caffe.ld_caffe.service;
 
-import LD_Caffe.ld_caffe.dto.UserDTO;
-import LD_Caffe.ld_caffe.entity.User;
+import LD_Caffe.ld_caffe.domain.UserEntity;
+import LD_Caffe.ld_caffe.dto.UserDto;
 import LD_Caffe.ld_caffe.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,16 +14,16 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
-    public List<User> findAllUser(){  // Repository 의 findAll() 메서드 호출
+    public List<UserEntity> findAllUser(){  // Repository 의 findAll() 메서드 호출
         return userRepository.findAll();
     }
 
-    public Optional<User> findUserById(String u_id){  // Repository 의 findById 로 ID값으로 유저 조회
+    public Optional<UserEntity> findUserById(String u_id){  // Repository 의 findById 로 ID값으로 유저 조회
         return userRepository.findById(u_id);
     }
 
-    public void saveUser(UserDTO userDTO){  // 유저 저장 메서드
-        User user = userDTO.toEntity();
+    public void saveUser(UserDto userDto){  // 유저 저장 메서드
+        UserEntity user = UserEntity.toEntity(userDto);
         userRepository.save(user);
     }
 

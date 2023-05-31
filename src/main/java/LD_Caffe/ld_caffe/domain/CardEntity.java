@@ -19,7 +19,7 @@ public class CardEntity {
 
     @Id
     @Column(name = "c_number")
-    private Integer cardNumber;
+    private String cardNumber;
 
     @Column(name = "c_pw")
     private Integer cardPassword;
