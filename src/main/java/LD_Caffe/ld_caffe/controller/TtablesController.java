@@ -5,7 +5,7 @@ import LD_Caffe.ld_caffe.service.TablesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,20 +16,8 @@ public class TtablesController {
     @Autowired
     private TablesService tablesService;
 
-    @GetMapping("/tables")
-    public String tablesform(){
 
-        return "tables";
-    }
-
-//    @PostMapping("/table/tablespro")
-//    public String tablespro(tables tables) {
-//
-//        tablesService.show(tables);
-//
-//        return "";
-//    }
-
+    @CrossOrigin("http://localhost:3000/")
     @GetMapping("/table/list")
     public String tablesList(Model model) {
 
@@ -37,12 +25,12 @@ public class TtablesController {
         List<String> colors = new ArrayList<>();
 
 
-        for(TablesEntity i : result){
+        for (TablesEntity i : result) {
             Integer useNum = i.getT_use();
-            if (useNum == 1){
+            if (useNum == 1) {
                 colors.add("#FF0000");
 
-            }else {
+            } else {
                 colors.add("#04B404");
 
             }
@@ -51,9 +39,13 @@ public class TtablesController {
         model.addAttribute("list", result);
         model.addAttribute("colors", colors);
 
-        System.out.println(colors);
-
         return "tableslist";
     }
 
+    @CrossOrigin("http://localhost:3000/")
+    @PostMapping("/tables/change")
+    public String  tablesChange(@RequestBody TablesEntity tablesEntity){
+        tablesService.changeSeat(tablesEntity);
+        return "redirect:/table/list";
+    }
 }

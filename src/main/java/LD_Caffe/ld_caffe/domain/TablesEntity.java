@@ -1,6 +1,8 @@
 package LD_Caffe.ld_caffe.domain;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.TypeAlias;
 
 import javax.persistence.*;
@@ -9,6 +11,8 @@ import javax.persistence.*;
 @Data
 @Entity //db 테이블 의미
 @Table(name = "tables")
+@Setter
+@Getter
 public class TablesEntity {
 
     @Id
