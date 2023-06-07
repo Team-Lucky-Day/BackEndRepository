@@ -17,7 +17,7 @@ public class TtablesController {
     private TablesService tablesService;
 
 
-    @CrossOrigin("http://localhost:3000/")
+    @CrossOrigin("http://localhost:3000")
     @GetMapping("/table/list")
     public String tablesList(Model model) {
 
@@ -42,7 +42,7 @@ public class TtablesController {
         return "tableslist";
     }
 
-    @CrossOrigin("http://localhost:3000/")
+    @CrossOrigin("http://localhost:3000")
     @PostMapping("/tables/change")
     public String  tablesChange(@RequestBody TablesEntity tablesEntity){
         tablesService.changeSeat(tablesEntity);
