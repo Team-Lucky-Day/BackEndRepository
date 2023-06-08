@@ -1,9 +1,5 @@
 package LD_Caffe.ld_caffe.controller;
 
-
-import LD_Caffe.ld_caffe.domain.CardEntity;
-import LD_Caffe.ld_caffe.domain.UserEntity;
-import LD_Caffe.ld_caffe.dto.DeleteDto;
 import LD_Caffe.ld_caffe.dto.LoginDto;
 import LD_Caffe.ld_caffe.dto.UserDto;
 import LD_Caffe.ld_caffe.repository.CardRepository;
@@ -11,21 +7,10 @@ import LD_Caffe.ld_caffe.repository.UserRepository;
 import LD_Caffe.ld_caffe.service.UserInfoService;
 import LD_Caffe.ld_caffe.service.UserService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.net.http.HttpRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
@@ -64,12 +49,14 @@ public class UserController {
         }else{
             return ResponseEntity.ok().build();  //존재하지 않는다 OK
         }
-
     }
 
     @PostMapping("/login")  // 로그인 메서드
-    public ResponseEntity<LoginDto> userLogin(@RequestBody LoginDto loginDto){
+    public ResponseEntity<LoginDto> userLogin(@RequestBody LoginDto loginDto,HttpServletRequest request){
         if(userService.userLogin(loginDto)){  // 로그인 성공
+            HttpSession session = request.getSession();
+            session.setAttribute("userId",loginDto.getUserId());
+            System.out.println(session.getAttribute("userId"));
             return ResponseEntity.ok().build();
         } else {  // 로그인 실패
             return ResponseEntity.badRequest().build();
@@ -77,8 +64,11 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<LoginDto> userLogOut(HttpSession session , LoginDto loginDto){
-        session.removeAttribute("");
+    public ResponseEntity<LoginDto> userLogOut(HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        if (session != null) {  // 세션이 존재한다면
+            session.invalidate(); // 세션 정보를 삭제한다
+        }
         return ResponseEntity.ok().build();
     }
 
