@@ -35,10 +35,12 @@ public class TablesService {
         if (entity.getT_use()==0){
             entity.setT_use(1);
             tablesRepository.save(entity);
+            System.out.println(entity);
 
-        }else{
+        }else if(entity.getT_use()==1){
             entity.setT_use(0);
             tablesRepository.save(entity);
+            System.out.println(entity);
         }
 
     }

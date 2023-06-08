@@ -3,6 +3,7 @@ package LD_Caffe.ld_caffe.controller;
 import LD_Caffe.ld_caffe.domain.TablesEntity;
 import LD_Caffe.ld_caffe.service.TablesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -44,8 +45,8 @@ public class TtablesController {
 
     @CrossOrigin("http://localhost:3000")
     @PostMapping("/tables/change")
-    public String  tablesChange(@RequestBody TablesEntity tablesEntity){
+    public ResponseEntity<String> tablesChange(@RequestBody TablesEntity tablesEntity){
         tablesService.changeSeat(tablesEntity);
-        return "redirect:/table/list";
+        return ResponseEntity.ok("1");
     }
 }
