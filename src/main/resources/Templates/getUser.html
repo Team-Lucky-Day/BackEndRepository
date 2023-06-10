@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Get User</title>
+  <link rel="stylesheet" href="css/getUser.css">
+</head>
+<body>
+<!--<h1>TEST</h1>-->
+<!--<div th:each="userData: ${userData}">-->
+<!--  <ul>-->
+<!--    <li th:text="${userData.id}"></li>-->
+<!--    <li></li>-->
+<!--    <li></li>-->
+<!--  </ul>-->
+<!--</div>-->
+
+  <h1>Get All User Data</h1>
+<div id="all">
+  <div id="information">
+    <h3> ##회원 정보## </h3>
+    <div id="users">
+      <ul th:each = "userData, state : ${userData}">
+        <li>아이디 : <span th:text = "${userData.userId}"></span></li>
+        <li>비밀번호 : <span th:text = "${userData.userPassword}" ></span></li>
+        <li>이름 : <span th:text = "${userData.userName}"></span></li>
+        <li>핸드폰 번호 : <span th:text = "${userData.userPhone}"></span></li>
+        <li>이메일 : <span th:text = "${userData.userEmail}"></span></li>
+        <li>카드 번호 : <span th:text = "${cardData[state.index].cardNumber}"></span></li>
+        <li>카드 비밀번호 : <span th:text = "${cardData[state.index].cardPassword}"></span></li>
+        <li>카드 CVC번호 : <span th:text = "${cardData[state.index].cardCvc}"></span></li>
+        <li>카드 유효기간 : <span th:text = "${cardData[state.index].cardDate}"></span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!--  <<<회원 추가 삭제>>>   -->
+  <div id="edit">
+    <!--   <<<회원 추가>>>  -->
+    <form action="/userInfo" method="post">
+      <input type="text" placeholder="아이디 입력" name="userId"><br>
+      <input type="text" placeholder="비밀번호 입력" name="userPassword"><br>
+      <input type="text" placeholder="이름 입력" name="userName"><br>
+      <input type="text" placeholder="핸드폰번호 입력" name="userPhone"><br>
+      <input type="text" placeholder="이메일 입력" name="userEmail" ><br>
+      <input type="text" placeholder="카드 번호 입력" name="cardNum"><br>
+      <input type="text" placeholder="카드 비밀번호 입력" name="cardPassword"><br>
+      <input type="text" placeholder="카드 CVC번호 입력" name="cardCvc"><br>
+      <input type="text" placeholder="카드 유효기간 입력" name="cardDate"><br>
+      <input type="submit" value="가입하기">
+    </form>
+
+    <!--   <<<회원 삭제>>>  -->
+    <form action="/deleteUser" method="post">
+      <h3>삭제할 회원의 아이디를 입력하세요</h3>
+      <input type="u_id" name="userId">
+      <input type="submit" value="삭제">
+    </form>
+  </div>
+</div>
+
+
+
+</body>
+</html>
