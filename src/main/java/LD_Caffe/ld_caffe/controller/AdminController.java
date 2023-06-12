@@ -3,9 +3,11 @@ package LD_Caffe.ld_caffe.controller;
 import LD_Caffe.ld_caffe.repository.UserRepository;
 import LD_Caffe.ld_caffe.service.AdminService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.parser.Entity;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -32,19 +34,20 @@ public class AdminController {
         return adminService.getUserNames();
     }
 
-    @DeleteMapping("/users/delete/{id}")
-    public Integer deleteUserInfo(@PathVariable String userId){
+    @DeleteMapping("/users/delete/{name}")
+    public ResponseEntity<String> deleteUserInfo(@PathVariable String name){
+        System.out.println(name);
 
-        Integer result = adminService.deleteUser(userId);
-
+        Integer result = adminService.deleteUser(name);
+        System.out.println("삭제결과" + result);
         if (result == 1){
-            return result;
+            System.out.println("데이터 찾음 // 데이터 삭제 완료");
+            return ResponseEntity.ok("데이터 삭제 완료");
         }else {
-            return 0;
+            System.out.println("데이터 없음 // 데이터 삭제 실패");
+            return null;
         }
 
-//        삭제처리 완료 => 1
-//        삭체처리 실패 => 0
     }
 
 }
