@@ -1,8 +1,12 @@
 package LD_Caffe.ld_caffe.controller;
 
+import LD_Caffe.ld_caffe.domain.MenuEntity;
+import LD_Caffe.ld_caffe.dto.MenuDto;
+import LD_Caffe.ld_caffe.repository.MenuRepository;
 import LD_Caffe.ld_caffe.repository.UserRepository;
 import LD_Caffe.ld_caffe.service.AdminService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.swing.text.html.parser.Entity;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 
 @Controller
@@ -19,6 +25,7 @@ import java.util.ArrayList;
 public class AdminController {
 
     public final AdminService adminService;
+    private final MenuRepository menuRepository;
 
     @ResponseBody
     @GetMapping("/users")
@@ -48,6 +55,38 @@ public class AdminController {
             return null;
         }
 
+    }
+
+    // 메뉴 데이터베이스 저장
+    @PostMapping("/menu")
+    public ResponseEntity<String> addMenu(@RequestBody MenuDto menuDto){
+
+        System.out.println("<< 추가할 메뉴 >>");
+        System.out.println("Category : " + menuDto.getCategory());
+        System.out.println("Menu Name : " + menuDto.getName());
+        System.out.println("Menu Content : " + menuDto.getContent());
+        System.out.println("Menu Price : " + menuDto.getPrice());
+
+
+        try { // 데이터베이스에 잘 저장 되었을 때
+            adminService.addMenu(menuDto);
+            return ResponseEntity.ok("메뉴 추가 성공");
+
+        }catch (Exception error) { // 데이터베이스에 저장 실패 했을 때
+            System.err.println("데이터베이스 저장 실패" + error.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("데이터베이스 저장 실패");
+        }
+    }
+
+    @ResponseBody
+    @GetMapping("/menuList")
+    public List<MenuDto> MenuList(){
+
+        List<MenuDto> allMenu = adminService.getAllMenu();
+//        System.out.println(allMenu.get(0));
+
+        return allMenu;
     }
 
 }
