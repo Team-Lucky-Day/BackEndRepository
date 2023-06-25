@@ -25,7 +25,7 @@ public class UserService {
     }
 
     public Boolean isIdExsits(LoginDto loginDto) {  // ID 중복확인 메서드
-        if(userRepository.findById(loginDto.getUserId()).isPresent()){
+        if(userRepository.findById(loginDto.getU_id()).isPresent()){
             return true;
         }else{
             return false;
@@ -34,15 +34,14 @@ public class UserService {
     } // 존재하면 true 존재하지 않으면 false
 
     public ResponseEntity<String> saveUser(UserDto userDto){  // 회원가입 메서드
-        LoginDto loginDto = LoginDto.builder().userId(userDto.getU_id()).userPw(userDto.getU_pw()).build();
+        LoginDto loginDto = LoginDto.builder().u_id(userDto.getU_id()).u_pw(userDto.getU_pw()).build();
         if (isIdExsits(loginDto)){
             return ResponseEntity.badRequest().build();
         }else{
             UserEntity user = UserEntity.toEntity(userDto);
             userRepository.save(user);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok("회원가입이 완료되었습니다.");
         }
-
     }
 
     public void deleteUser(String userId){
@@ -51,9 +50,9 @@ public class UserService {
 
     //Login 메서드
     public boolean userLogin(LoginDto loginDto){
-        Optional<UserEntity> user = userRepository.findById(loginDto.getUserId());
+        Optional<UserEntity> user = userRepository.findById(loginDto.getU_id());
         if (user.isPresent()){  // 로그인 성공
-            return user.get().getUserPassword().equals(loginDto.getUserPw());
+            return user.get().getUserPassword().equals(loginDto.getU_pw());
         }else{  // 로그인 실패
             return false;
         }

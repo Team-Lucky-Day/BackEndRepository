@@ -39,24 +39,29 @@ public class UserController {
 
     @PostMapping("/signup")   // 회원가입 메서드
     public ResponseEntity<String> signUpUser(@RequestBody UserDto userDTO){
-        return userService.saveUser(userDTO);  //ResponseEntity 로 반환해준다
+        System.out.println("userDTO = " + userDTO.getU_id());
+        userService.saveUser(userDTO);
+        return ResponseEntity.ok().build();  //ResponseEntity 로 반환해준다
+
     }
 
     @PostMapping("/IDcheck")  // ID 중복확인 메서드
-    public ResponseEntity<LoginDto> isIDPresent(@RequestBody LoginDto loginDto){
+    public ResponseEntity<String> isIDPresent(@RequestBody LoginDto loginDto){
         if (userService.isIdExsits(loginDto)){ // 존재한다 400
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("이미 존재하는 ID 입니다.");
         }else{
-            return ResponseEntity.ok().build();  //존재하지 않는다 OK
+            return ResponseEntity.ok("생성가능한 ID 입니다.");  //존재하지 않는다 OK
         }
     }
 
     @PostMapping("/login")  // 로그인 메서드
     public ResponseEntity<LoginDto> userLogin(@RequestBody LoginDto loginDto,HttpServletRequest request){
+        System.out.println("loginDto.getU_id() = " + loginDto.getU_id());
+        System.out.println("loginDto.getU_pw() = " + loginDto.getU_pw());
         if(userService.userLogin(loginDto)){  // 로그인 성공
             HttpSession session = request.getSession();
-            session.setAttribute("userId",loginDto.getUserId());
-            System.out.println(session.getAttribute("userId"));
+            session.setAttribute("loginId",loginDto.getU_id());  // 로그인 성공하면 세션 생성
+            System.out.println(session.getAttribute("loginId"));
             return ResponseEntity.ok().build();
         } else {  // 로그인 실패
             return ResponseEntity.badRequest().build();
@@ -64,14 +69,13 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<LoginDto> userLogOut(HttpServletRequest request){
+    public ResponseEntity<LoginDto> userLogOut(HttpServletRequest request){  // 로그아웃 메서드
         HttpSession session = request.getSession(false);
         if (session != null) {  // 세션이 존재한다면
             session.invalidate(); // 세션 정보를 삭제한다
         }
         return ResponseEntity.ok().build();
     }
-
 
 
 
