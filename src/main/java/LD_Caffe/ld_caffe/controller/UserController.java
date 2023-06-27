@@ -4,12 +4,14 @@ package LD_Caffe.ld_caffe.controller;
 import LD_Caffe.ld_caffe.domain.CardEntity;
 import LD_Caffe.ld_caffe.domain.UserEntity;
 import LD_Caffe.ld_caffe.dto.DeleteDto;
+import LD_Caffe.ld_caffe.dto.LoginDto;
 import LD_Caffe.ld_caffe.dto.UserDto;
 import LD_Caffe.ld_caffe.repository.CardRepository;
 import LD_Caffe.ld_caffe.repository.UserRepository;
 import LD_Caffe.ld_caffe.service.UserInfoService;
 import LD_Caffe.ld_caffe.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +28,7 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/user")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000/")
 public class UserController {
 
     private final UserService userService;
@@ -44,15 +49,43 @@ public class UserController {
         model.addAttribute("user",user.get());
         return "userInfo";
     }
-
-    @PostMapping("/signup")
-    @CrossOrigin(origins = "http://localhost:3000/")
-    public String signUpUser(@RequestBody UserDto userDTO){
+    @PostMapping("/login")  // 로그인 메서드
+    public ResponseEntity<LoginDto> userLogin(@RequestBody LoginDto loginDto, HttpServletRequest request){
+        System.out.println("loginDto.getU_id() = " + loginDto.getU_id());
+        System.out.println("loginDto.getU_pw() = " + loginDto.getU_pw());
+        if(userService.userLogin(loginDto)){  // 로그인 성공
+            HttpSession session = request.getSession();
+            session.setAttribute("loginId",loginDto.getU_id());  // 로그인 성공하면 세션 생성
+            System.out.println(session.getAttribute("loginId"));
+            return ResponseEntity.ok().build();
+        } else {  // 로그인 실패
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    @PostMapping("/signup")   // 회원가입 메서드
+    public ResponseEntity<String> signUpUser(@RequestBody UserDto userDTO){
+        System.out.println("userDTO = " + userDTO.getU_id());
         userService.saveUser(userDTO);
-        return "";
+        return ResponseEntity.ok().build();  //ResponseEntity 로 반환해준다
+
     }
 
-
+    @PostMapping("/IDcheck")  // ID 중복확인 메서드
+    public ResponseEntity<String> isIDPresent(@RequestBody LoginDto loginDto){
+        if (userService.isIdExsits(loginDto)){ // 존재한다 400
+            return ResponseEntity.badRequest().body("이미 존재하는 ID 입니다.");
+        }else{
+            return ResponseEntity.ok("생성가능한 ID 입니다.");  //존재하지 않는다 OK
+        }
+    }
+    @PostMapping("/logout")
+    public ResponseEntity<LoginDto> userLogOut(HttpServletRequest request){  // 로그아웃 메서드
+        HttpSession session = request.getSession(false);
+        if (session != null) {  // 세션이 존재한다면
+            session.invalidate(); // 세션 정보를 삭제한다
+        }
+        return ResponseEntity.ok().build();
+    }
 
     @GetMapping("/error")
     public String error(){
@@ -78,7 +111,6 @@ public class UserController {
 
        model.addAttribute("userData",userData);
        model.addAttribute("cardData",cardData);
-
         return "getUser";
     }
 
@@ -92,7 +124,7 @@ public class UserController {
         return new RedirectView("/userInfo");
     }
 
-
+    @CrossOrigin("http://localhost:3000")
     @PostMapping("/deleteUser")
     public RedirectView deleteUserInfo(@ModelAttribute DeleteDto deleteDto, RedirectAttributes redirectAttributes){
         String userId = deleteDto.getUserId();

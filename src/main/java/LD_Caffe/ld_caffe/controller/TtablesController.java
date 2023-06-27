@@ -3,12 +3,15 @@ package LD_Caffe.ld_caffe.controller;
 import LD_Caffe.ld_caffe.domain.TablesEntity;
 import LD_Caffe.ld_caffe.service.TablesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class TtablesController {
@@ -16,44 +19,41 @@ public class TtablesController {
     @Autowired
     private TablesService tablesService;
 
-    @GetMapping("/tables")
-    public String tablesform(){
 
-        return "tables";
+    @CrossOrigin("http://localhost:3000")
+    @RestController
+    @RequestMapping("/table")
+    public class TableController {
+
+        @Autowired
+        private TablesService tablesService;
+
+        @GetMapping("/list")
+        public List<Map<String, Object>> tablesList() {
+            List<TablesEntity> result = tablesService.tablesList();
+            List<Map<String, Object>> tables = new ArrayList<>();
+
+            for (TablesEntity table : result) {
+                Map<String, Object> tableMap = new HashMap<>();
+                tableMap.put("t_code", table.getT_code());
+                tableMap.put("t_use", table.getT_use());
+                tableMap.put("t_headcount", table.getT_headcount());
+                tableMap.put("color", table.getT_use() == 1 ? "#FF0000" : "#ccc");
+                tables.add(tableMap);
+            }
+
+            return tables;
+        }
     }
 
-//    @PostMapping("/table/tablespro")
-//    public String tablespro(tables tables) {
-//
-//        tablesService.show(tables);
-//
-//        return "";
-//    }
-
-    @GetMapping("/table/list")
-    public String tablesList(Model model) {
-
-        List<TablesEntity> result = tablesService.tablesList();
-        List<String> colors = new ArrayList<>();
 
 
-        for(TablesEntity i : result){
-            Integer useNum = i.getT_use();
-            if (useNum == 1){
-                colors.add("#FF0000");
 
-            }else {
-                colors.add("#04B404");
-
-            }
-        }
-        // 모델에 값 넣어주기
-        model.addAttribute("list", result);
-        model.addAttribute("colors", colors);
-
-        System.out.println(colors);
-
-        return "tableslist";
+    @CrossOrigin("http://localhost:3000")
+    @PostMapping("/tables/change")
+    public ResponseEntity<String> tablesChange(@RequestBody TablesEntity tablesEntity){
+        tablesService.changeSeat(tablesEntity);
+        return ResponseEntity.ok("1");
     }
 
 }

@@ -13,6 +13,6 @@ public class MenuDto {
 
     private String category;
     private String name;
-    private String  content;
+    private String content;
     private Integer price;
 }
