@@ -1,5 +1,6 @@
 package LD_Caffe.ld_caffe.controller;
 
+import LD_Caffe.ld_caffe.dto.KakaoDto;
 import LD_Caffe.ld_caffe.token.OAuthToken;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,7 +59,35 @@ public class KakaoController {
         }
 
         System.out.println("oAuthToken.getAccess_token() = " + oAuthToken.getAccess_token());
-        return "카카오 토큰 요청 완료 = "+response ;
+
+        RestTemplate rt2 = new RestTemplate();
+        //Http headers 생성
+        HttpHeaders headers2 = new HttpHeaders();
+        headers2.add("Authorization","Bearer "+oAuthToken.getAccess_token());
+        headers2.add("Content-type","application/x-www-form-urlencoded;charset=utf-8");
+
+        // Http header 와 Http body 를 하나의 오브젝트에 담기
+        HttpEntity<MultiValueMap<String,String>> kakaoProfileRequest2 = new HttpEntity<>(headers2);
+
+        //Http 요청하기 - POST 방식으로 , 그리고 response 변수의 응답을 받는다.
+        ResponseEntity<String> response2 = rt2.exchange(
+                "https://kapi.kakao.com/v2/user/me",
+                HttpMethod.POST,
+                kakaoProfileRequest2,
+                String.class
+        );
+
+        ObjectMapper objectMapper2 = new ObjectMapper();
+        KakaoDto kakaoDto = null;
+        try {
+            kakaoDto = objectMapper2.readValue(response2.getBody(),KakaoDto.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        System.out.println();
+        return response2.getBody();
 
     }
 }

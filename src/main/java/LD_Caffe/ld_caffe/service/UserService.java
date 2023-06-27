@@ -4,7 +4,9 @@ import LD_Caffe.ld_caffe.domain.UserEntity;
 import LD_Caffe.ld_caffe.dto.LoginDto;
 import LD_Caffe.ld_caffe.dto.UserDto;
 import LD_Caffe.ld_caffe.repository.UserRepository;
+import LD_Caffe.ld_caffe.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +16,13 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    @Value("${jwt.secret}")
+    private String secretKey;
+
+    private final long expiredMs = 1000 * 60 * 60L;
+
     private final UserRepository userRepository;
+
 
     public List<UserEntity> findAllUser(){  // Repository 의 findAll() 메서드 호출
         return userRepository.findAll();
@@ -48,17 +56,23 @@ public class UserService {
         userRepository.delete(userRepository.findById(userId).get());
     }
 
-    //Login 메서드
-    public boolean userLogin(LoginDto loginDto){
+    //Login 인증과정
+    public boolean userLogin(LoginDto loginDto) {  //성공하면 True 반환 실패하면 false 반환
         Optional<UserEntity> user = userRepository.findById(loginDto.getU_id());
-        if (user.isPresent()){  // 로그인 성공
+        if (user.isPresent()) {  // 로그인 성공
             return user.get().getUserPassword().equals(loginDto.getU_pw());
-        }else{  // 로그인 실패
+        } else {  // 로그인 실패
             return false;
         }
     }
 
-
+    public String createJwt(LoginDto loginDto){  // userLogin 메서드로 인증 후 True면 토큰반환
+        if(userLogin(loginDto)){
+            return JwtUtil.createJwt(loginDto.getU_id(),secretKey,expiredMs);
+        }else{
+            return "0";
+        }
+    }
 }
 
 

@@ -7,10 +7,10 @@ import LD_Caffe.ld_caffe.repository.UserRepository;
 import LD_Caffe.ld_caffe.service.UserInfoService;
 import LD_Caffe.ld_caffe.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/user")
@@ -55,25 +55,20 @@ public class UserController {
     }
 
     @PostMapping("/login")  // 로그인 메서드
-    public ResponseEntity<LoginDto> userLogin(@RequestBody LoginDto loginDto,HttpServletRequest request){
+    public ResponseEntity<String> userLogin(@RequestBody LoginDto loginDto,HttpServletRequest request){
         System.out.println("loginDto.getU_id() = " + loginDto.getU_id());
         System.out.println("loginDto.getU_pw() = " + loginDto.getU_pw());
-        if(userService.userLogin(loginDto)){  // 로그인 성공
-            HttpSession session = request.getSession();
-            session.setAttribute("loginId",loginDto.getU_id());  // 로그인 성공하면 세션 생성
-            System.out.println(session.getAttribute("loginId"));
-            return ResponseEntity.ok().build();
-        } else {  // 로그인 실패
+        String token = userService.createJwt(loginDto);
+        if(token.equals("0")){
             return ResponseEntity.badRequest().build();
+        }else{
+            System.out.println("token = " + token);
+            return ResponseEntity.ok().body(token);
         }
     }
 
     @PostMapping("/logout")
     public ResponseEntity<LoginDto> userLogOut(HttpServletRequest request){  // 로그아웃 메서드
-        HttpSession session = request.getSession(false);
-        if (session != null) {  // 세션이 존재한다면
-            session.invalidate(); // 세션 정보를 삭제한다
-        }
         return ResponseEntity.ok().build();
     }
 
