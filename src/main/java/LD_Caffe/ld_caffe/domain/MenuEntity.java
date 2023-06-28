@@ -4,6 +4,8 @@ import LD_Caffe.ld_caffe.dto.MenuDto;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.File;
+import java.util.Arrays;
 
 @Getter
 @Setter
@@ -31,6 +33,9 @@ public class MenuEntity {
     @Column(name = "m_category")
     private String menuCategory;
 
+    @Column(name = "m_imgPath")
+    private String menuImagePath;
+
 
     public static MenuEntity toMenuEntity(MenuDto menuDto){
         return MenuEntity.builder()
@@ -38,6 +43,7 @@ public class MenuEntity {
                 .menuName(menuDto.getName())
                 .menuContents(menuDto.getContent())
                 .menuPrice(menuDto.getPrice())
+                .menuImagePath(menuDto.getImagePath())
                 .build();
     }
 }

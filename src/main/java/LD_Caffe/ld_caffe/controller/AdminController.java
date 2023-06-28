@@ -3,19 +3,29 @@ package LD_Caffe.ld_caffe.controller;
 import LD_Caffe.ld_caffe.domain.MenuEntity;
 import LD_Caffe.ld_caffe.dto.MenuDto;
 import LD_Caffe.ld_caffe.repository.MenuRepository;
-import LD_Caffe.ld_caffe.repository.UserRepository;
 import LD_Caffe.ld_caffe.service.AdminService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.swing.text.html.parser.Entity;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Array;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Controller
@@ -59,18 +69,43 @@ public class AdminController {
 
     // 메뉴 데이터베이스 저장
     @PostMapping("/menu")
-    public ResponseEntity<String> addMenu(@RequestBody MenuDto menuDto){
+    public ResponseEntity<String> addMenu(@RequestParam("image") MultipartFile file,
+                                          @RequestParam("category") String category,
+                                          @RequestParam("name") String name,
+                                          @RequestParam("content") String content,
+                                          @RequestParam("price") Integer price){
 
         System.out.println("<< 추가할 메뉴 >>");
-        System.out.println("Category : " + menuDto.getCategory());
-        System.out.println("Menu Name : " + menuDto.getName());
-        System.out.println("Menu Content : " + menuDto.getContent());
-        System.out.println("Menu Price : " + menuDto.getPrice());
+        System.out.println("Category : " +category);
+        System.out.println("Menu Name : " + name);
+        System.out.println("Menu Content : " + content);
+        System.out.println("Menu Price : " + price);
+        System.out.println("File Name : " + file.getOriginalFilename());
 
+        try {
+            // 파일 이름 생성
+            String fileName = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
 
-        try { // 데이터베이스에 잘 저장 되었을 때
+            // 이미지 파일 저장 경로
+            String saveDir = "/Users/jujaeyoung/desktop/images";
+            Path filePath = Paths.get(saveDir, fileName);
+
+            // 이미지 파일 저장
+            File saveFile = filePath.toFile();
+            file.transferTo(saveFile);
+
+            //MenuDto 설정
+            MenuDto menuDto = new MenuDto();
+            menuDto.setCategory(category);
+            menuDto.setName(name);
+            menuDto.setContent(content);
+            menuDto.setPrice(price);
+            menuDto.setImagePath(saveDir + fileName);
+
+            //DB저장
             adminService.addMenu(menuDto);
-            return ResponseEntity.ok("메뉴 추가 성공");
+
+            return ResponseEntity.ok("메뉴/메뉴이미지 추가 성공");
 
         }catch (Exception error) { // 데이터베이스에 저장 실패 했을 때
             System.err.println("데이터베이스 저장 실패" + error.getMessage());
@@ -81,12 +116,61 @@ public class AdminController {
 
     @ResponseBody
     @GetMapping("/menuList")
-    public List<MenuDto> MenuList(){
+    public ResponseEntity<List<MenuDto>> MenuList() throws IOException {
 
-        List<MenuDto> allMenu = adminService.getAllMenu();
-//        System.out.println(allMenu.get(0));
+        List<MenuDto> menuInfo = adminService.getAllMenuInfo();
 
-        return allMenu;
+        for (MenuDto menu : menuInfo){
+            System.out.println(menu.getImageBytes());
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        return new ResponseEntity<>(menuInfo, headers, HttpStatus.OK);
+    }
+
+
+
+    @PostMapping("/test")
+    public ResponseEntity<String> test(@RequestParam("image") MultipartFile file){
+
+        System.out.println("File Name : " + file.getOriginalFilename());
+
+        System.out.println("파일 서버저장 시작");
+        try{
+
+            // 파일 이름 생성
+            String fileName = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
+
+            // 이미지 파일 저장 경로
+            String saveDir = "/Users/jujaeyoung/desktop/images";
+            Path filePath = Paths.get(saveDir, fileName);
+
+            // 이미지 파일 저장
+            File saveFile = filePath.toFile();
+            file.transferTo(saveFile);
+
+            return ResponseEntity.ok("서버 저장 성공");
+
+        }catch (Exception error){
+            System.err.println(error.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("경로 저장 실패");
+        }
+
+    }
+
+    @GetMapping("/getTest")
+    public ResponseEntity<byte[]> getImage() throws IOException{
+
+        File file = new File("/Users/jujaeyoung/desktop/images/c1.jpg");
+        byte[] imageBytes = Files.readAllBytes(file.toPath());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+
+        return new ResponseEntity<>(imageBytes, headers ,HttpStatus.OK);
     }
 
 }

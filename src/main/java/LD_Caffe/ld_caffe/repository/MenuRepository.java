@@ -11,4 +11,5 @@ import java.util.List;
 public interface MenuRepository extends JpaRepository<MenuEntity, Integer> {
 
 
+    List<MenuEntity> findBymenuCategory(String category);
 }
