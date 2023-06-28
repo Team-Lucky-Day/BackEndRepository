@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <br>
+    <div>
+        <h2>주문 번호</h2>
+        <div th:text="${order.o_code}">주문번호</div>
+    </div>
+    <br>
+    <div>
+        <h2>주문 시각</h2>
+        <div th:text="${order.o_date}" >유저 비밀번호</div>
+    </div>
+    <br>
+
+    <div>
+        <h2>주문한 유저</h2>
+        <a th:href="@{'/user/' + ${user.u_id}}" ><span th:text="${user.u_name}"></span></a>
+    </div>
+    <br>
+
+    <a href="http://localhost:8080/order/list" >주문 목록</a>
+</body>
+</html>

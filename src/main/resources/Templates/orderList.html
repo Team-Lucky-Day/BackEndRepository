@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<table>
+    <thead>
+    <tr>
+        <th>주문 목록</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="orders : ${orders}">
+        <td ><a th:href="@{'/order/' + ${orders.o_code}}"><span th:text="${orders.o_code}" ></span></a></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <br>
+  <div>
+    <h2>유저 이름</h2>
+    <div th:text="${user.userName}">유저 이름</div>
+  </div>
+  <br>
+  <div>
+    <h2>유저 아이디</h2>
+    <div th:text="${user.userId}">유저 아이디</div>
+  </div>
+  <br>
+  <div>
+    <h2>유저 비밀번호</h2>
+    <div th:text="${user.userPassword}" >유저 비밀번호</div>
+  </div>
+  <br>
+
+  <div>
+    <h2>유저 전화번호</h2>
+    <div th:text="${user.userPhone}" >유저 전화번호</div>
+  </div>
+  <br>
+
+  <a href="http://localhost:8080/user/list" >유저 목록</a>
+</body>
+</html>

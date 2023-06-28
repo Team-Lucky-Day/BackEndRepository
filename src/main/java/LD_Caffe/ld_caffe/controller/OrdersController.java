@@ -28,13 +28,13 @@ public class OrdersController {
         model.addAttribute("orders",ordersService.allOrders());
         return "orderList";
     }
-
-    @GetMapping("/{o_code}")  // 주문 상세 조회
-    public String showOrderDetail(@PathVariable("o_code") int o_code, Model model){
-        OrdersEntity order = ordersService.findOrderById(o_code).get();
-        model.addAttribute("order",order);
-        model.addAttribute("user",userService.findUserById(order.getU_id()).get());
-        return "orderDetail";
-    }
+//
+//    @GetMapping("/{o_code}")  // 주문 상세 조회
+//    public String showOrderDetail(@PathVariable("o_code") int o_code, Model model){
+//        OrdersEntity order = ordersService.findOrderById(o_code).get();
+//        model.addAttribute("order",order);
+//        model.addAttribute("user",userService.findUserById(order.getU_id()).get());
+//        return "orderDetail";
+//    }
 
 }
