@@ -7,7 +7,6 @@ import LD_Caffe.ld_caffe.repository.UserRepository;
 import LD_Caffe.ld_caffe.service.UserInfoService;
 import LD_Caffe.ld_caffe.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
@@ -66,13 +65,6 @@ public class UserController {
             return ResponseEntity.ok().body(token);
         }
     }
-
-    @PostMapping("/logout")
-    public ResponseEntity<LoginDto> userLogOut(HttpServletRequest request){  // 로그아웃 메서드
-        return ResponseEntity.ok().build();
-    }
-
-
 
 //   public final TestService testService;
 

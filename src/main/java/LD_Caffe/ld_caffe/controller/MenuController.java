@@ -4,15 +4,12 @@ import LD_Caffe.ld_caffe.domain.MenuEntity;
 import LD_Caffe.ld_caffe.dto.MenuDto;
 import LD_Caffe.ld_caffe.service.MenuService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequiredArgsConstructor
 @RequestMapping("/menu")
@@ -20,43 +17,33 @@ public class MenuController {
 
     public final MenuService menuService;
 
-    @GetMapping("/coffee")
-    @ResponseBody
+    @GetMapping("/coffee")  // 커피 전체 메뉴 반환
     public ResponseEntity<List<MenuEntity>> getCoffeeList(){
-
-        try{
+        if(menuService.getList("coffee") != null){
             List<MenuEntity> coffeeList = menuService.getList("coffee");
             return ResponseEntity.ok(coffeeList);
-        }catch(Exception error){
-            System.err.println("Error Massage : "+error.getMessage());
-            return null;
+        }else{
+            return ResponseEntity.notFound().build();
         }
-
     }
 
-    @GetMapping("/beverage")
-    @ResponseBody
+    @GetMapping("/beverage")  // 음료 전체 메뉴 반환
     public ResponseEntity<List<MenuEntity>> getBeverageList(){
-
-        try{
-            List<MenuEntity> beverageList = menuService.getList("beverage");
-            return ResponseEntity.ok(beverageList);
-        }catch (Exception error){
-            System.err.println("Error Massage : " + error.getMessage());
-            return null;
+        if(menuService.getList("beverage") != null){
+            List<MenuEntity> coffeeList = menuService.getList("beverage");
+            return ResponseEntity.ok(coffeeList);
+        }else{
+            return ResponseEntity.notFound().build();
         }
     }
 
-    @GetMapping("/dessert")
-    @ResponseBody
+    @GetMapping("/dessert")  // 디저트 전체 메뉴 반환
     public ResponseEntity<List<MenuEntity>> getDessertList(){
-
-        try{
-            List<MenuEntity> dessertList = menuService.getList("dessert");
-            return ResponseEntity.ok(dessertList);
-        }catch(Exception error){
-            System.err.println("Error Massage : " + error.getMessage());
-            return null;
+        if(menuService.getList("dessert") != null){
+            List<MenuEntity> coffeeList = menuService.getList("dessert");
+            return ResponseEntity.ok(coffeeList);
+        }else{
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -64,6 +51,4 @@ public class MenuController {
     public void payment(@RequestBody MenuDto paymentList){
 
     }
-
-
 }
