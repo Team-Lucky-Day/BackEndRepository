@@ -45,6 +45,8 @@ public class TestController {
     @PostMapping("/finduser")
     public String findUser(Authentication authentication) {
         System.out.println(authentication.getName());
+        System.out.println("authentication.getDetails() = " + authentication.getDetails());
+        System.out.println("authentication.getAuthorities() = " + authentication.getAuthorities());
         return "OK";
     }
 }

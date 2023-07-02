@@ -8,6 +8,7 @@ import LD_Caffe.ld_caffe.service.UserInfoService;
 import LD_Caffe.ld_caffe.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
@@ -64,6 +65,12 @@ public class UserController {
             System.out.println("token = " + token);
             return ResponseEntity.ok().body(token);
         }
+    }
+
+    @PostMapping("/getName")  // user 이름 리턴해주는 메서드
+    public ResponseEntity<String> getUserName(Authentication authentication) {
+        String userName = userService.findUserById(authentication.getName()).get().getUserName();
+        return ResponseEntity.ok().body(userName);
     }
 
 //   public final TestService testService;

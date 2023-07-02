@@ -47,8 +47,4 @@ public class MenuController {
         }
     }
 
-    @PostMapping("/payment")
-    public void payment(@RequestBody MenuDto paymentList){
-
-    }
 }
