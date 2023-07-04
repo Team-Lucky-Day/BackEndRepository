@@ -79,10 +79,13 @@ public class AdminService {
 
 
             //이미지 바이트를 Base64로 인코딩하고 Dto에 추가
-            String encodedImage = Base64.getEncoder().encodeToString(imageBytes);
-            menuDto.setImageBytes(encodedImage.getBytes());
+            // 서버에서 Base64로 인코딩하면 리엑트에서 인코딩할 필요가 없음
+//            하지만 지금은 리엑트에서 Base64로 인코딩하기 때문에 서버에서는 인코딩 할 필요가 없다.
+//            String encodedImage = Base64.getEncoder().encodeToString(imageBytes);
+//            menuDto.setImageBytes(encodedImage.getBytes());
 //            menuDto.setImageType("MediaType.IMAGE_JPEG");
 
+            menuDto.setImageBytes(imageBytes);
 
 
 

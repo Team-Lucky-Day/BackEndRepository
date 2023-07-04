@@ -18,6 +18,7 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
             nativeQuery = true) //nativeQuery조건이 없으면 오류가 난다.
     List<UserEntity> getAllUserInfo();
 
+//    void deleteById(Integer userId);
 //
 //    @Query("select u.* from user u where ")
 //    List<UserEntity> getuserTable;

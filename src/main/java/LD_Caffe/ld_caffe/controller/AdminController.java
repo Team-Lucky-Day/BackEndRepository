@@ -164,7 +164,12 @@ public class AdminController {
     @GetMapping("/getTest")
     public ResponseEntity<byte[]> getImage() throws IOException{
 
-        File file = new File("/Users/jujaeyoung/desktop/images/c1.jpg");
+        List<MenuEntity> menuInfoList = menuRepository.findAll();
+        String imagePath = menuInfoList.get(10).getMenuImagePath();
+
+
+//        File file = new File("/Users/jujaeyoung/desktop/images/c1.jpg");
+        File file = new File(imagePath);
         byte[] imageBytes = Files.readAllBytes(file.toPath());
 
         HttpHeaders headers = new HttpHeaders();
