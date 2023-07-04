@@ -1,8 +1,10 @@
 package LD_Caffe.ld_caffe.service;
 
+import LD_Caffe.ld_caffe.domain.CardEntity;
 import LD_Caffe.ld_caffe.domain.UserEntity;
 import LD_Caffe.ld_caffe.dto.LoginDto;
 import LD_Caffe.ld_caffe.dto.UserDto;
+import LD_Caffe.ld_caffe.repository.CardRepository;
 import LD_Caffe.ld_caffe.repository.UserRepository;
 import LD_Caffe.ld_caffe.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ public class UserService {
     private final long expiredMs = 1000 * 60 * 60L;
 
     private final UserRepository userRepository;
+    private final CardRepository cardRepository;
 
 
     public List<UserEntity> findAllUser(){  // Repository 의 findAll() 메서드 호출
@@ -47,7 +50,11 @@ public class UserService {
             return ResponseEntity.badRequest().build();
         }else{
             UserEntity user = UserEntity.toEntity(userDto);
+            CardEntity card = CardEntity.toCardEntity(userDto);
             userRepository.save(user);
+            if (card.getCardCvc() != null && card.getCardDate() != null && card.getCardPassword() != null) {
+                cardRepository.save(card);  // 카드 정보가 있는지 검사
+            }
             return ResponseEntity.ok("회원가입이 완료되었습니다.");
         }
     }

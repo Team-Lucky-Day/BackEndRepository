@@ -12,10 +12,8 @@ import java.util.List;
 public class MenuService {
 
     private final MenuRepository menuRepository;
+
     public List<MenuEntity> getList(String category) {
-
-        List<MenuEntity> result = menuRepository.findBymenuCategory(category);
-
-        return result;
+        return menuRepository.findBymenuCategory(category);
     }
 }
