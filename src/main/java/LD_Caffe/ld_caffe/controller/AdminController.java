@@ -87,7 +87,7 @@ public class AdminController {
             String fileName = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
 
             // 이미지 파일 저장 경로
-            String saveDir = "/Users/jujaeyoung/desktop/images";
+            String saveDir = "/Users/jujaeyoung/desktop/images/";
             Path filePath = Paths.get(saveDir, fileName);
 
             // 이미지 파일 저장
@@ -130,52 +130,30 @@ public class AdminController {
         return new ResponseEntity<>(menuInfo, headers, HttpStatus.OK);
     }
 
+    @DeleteMapping("/menu/delete/{menuName}")
+    public ResponseEntity<String> deleteMenuInfo(@PathVariable String menuName){
+        System.out.println(menuName);
 
-
-    @PostMapping("/test")
-    public ResponseEntity<String> test(@RequestParam("image") MultipartFile file){
-
-        System.out.println("File Name : " + file.getOriginalFilename());
-
-        System.out.println("파일 서버저장 시작");
         try{
 
-            // 파일 이름 생성
-            String fileName = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
+            Integer result = adminService.deleteMenu(menuName);
 
-            // 이미지 파일 저장 경로
-            String saveDir = "/Users/jujaeyoung/desktop/images";
-            Path filePath = Paths.get(saveDir, fileName);
+            if (result == 1){
+                System.out.println(" 메뉴 삭제 완료");
+                return ResponseEntity.ok("데이터 삭제 완료");
+            }else {
+                System.out.println("데이터 없음 // 데이터 삭제 실패");
+                return null;
+            }
 
-            // 이미지 파일 저장
-            File saveFile = filePath.toFile();
-            file.transferTo(saveFile);
-
-            return ResponseEntity.ok("서버 저장 성공");
-
-        }catch (Exception error){
-            System.err.println(error.getMessage());
+        }catch(Exception error){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("경로 저장 실패");
+                    .body("메뉴 삭제 실패");
         }
 
+
     }
 
-    @GetMapping("/getTest")
-    public ResponseEntity<byte[]> getImage() throws IOException{
 
-        List<MenuEntity> menuInfoList = menuRepository.findAll();
-        String imagePath = menuInfoList.get(10).getMenuImagePath();
-
-
-//        File file = new File("/Users/jujaeyoung/desktop/images/c1.jpg");
-        File file = new File(imagePath);
-        byte[] imageBytes = Files.readAllBytes(file.toPath());
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.IMAGE_JPEG);
-
-        return new ResponseEntity<>(imageBytes, headers ,HttpStatus.OK);
-    }
 
 }

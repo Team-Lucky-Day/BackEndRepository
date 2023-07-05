@@ -96,4 +96,17 @@ public class AdminService {
         }
 
 
+    public Integer deleteMenu(String menuName) {
+
+        Optional<MenuEntity> menuInfo = menuRepository.findByMenuName(menuName);
+
+        if (menuInfo.isPresent()){
+            Integer menuCode = menuInfo.get().getMenuCode();
+            menuRepository.deleteById(menuCode);
+            return 1;
+        }else {
+            return 2;
+        }
+
+    }
 }
