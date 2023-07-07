@@ -42,16 +42,4 @@ public class CardEntity {
                 .build();
     }
 
-    // <<<TEST>>>
-//    public static CardEntity testCardEntity(TestDto testDto){
-//
-//
-//        CardEntity testEntity = new CardEntity();
-//        testEntity.setCardNumber(testDto.getCardNum());
-//        testEntity.setCardPassword(testDto.getCardPassword());
-//        testEntity.setCardCvc(testDto.getCardCvc());
-//        testEntity.setCardDate(testDto.getCardDate());
-//        System.out.println(testEntity.getCardCvc());
-//        return testEntity;
-//    }
 }

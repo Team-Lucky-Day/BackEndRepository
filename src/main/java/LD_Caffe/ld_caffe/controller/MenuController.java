@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("/menu")
 public class MenuController {
 
-    public final MenuService menuService;
+    private final MenuService menuService;
 
     @GetMapping("/coffee")  // 커피 전체 메뉴 반환
     public ResponseEntity<List<MenuEntity>> getCoffeeList(){
