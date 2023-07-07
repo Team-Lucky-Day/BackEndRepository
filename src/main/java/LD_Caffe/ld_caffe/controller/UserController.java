@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @PostMapping("/login")  // 로그인 메서드
-    public ResponseEntity<String> userLogin(@RequestBody LoginDto loginDto,HttpServletRequest request){
+    public ResponseEntity<String> userLogin(@RequestBody LoginDto loginDto){
         System.out.println("loginDto.getU_id() = " + loginDto.getU_id());
         System.out.println("loginDto.getU_pw() = " + loginDto.getU_pw());
         String token = userService.createJwt(loginDto);

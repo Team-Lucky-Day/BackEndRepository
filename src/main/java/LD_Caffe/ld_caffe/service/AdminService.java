@@ -2,10 +2,13 @@ package LD_Caffe.ld_caffe.service;
 
 import LD_Caffe.ld_caffe.domain.MenuEntity;
 import LD_Caffe.ld_caffe.domain.UserEntity;
+import LD_Caffe.ld_caffe.dto.LoginDto;
 import LD_Caffe.ld_caffe.dto.MenuDto;
 import LD_Caffe.ld_caffe.repository.MenuRepository;
 import LD_Caffe.ld_caffe.repository.UserRepository;
+import LD_Caffe.ld_caffe.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.swing.event.MenuEvent;
@@ -18,6 +21,10 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class AdminService {
+    @Value("${jwt.secret}")
+    private String secretKey;
+
+    private final long expiredMs = 1000 * 60 * 30L;
 
     private final UserRepository userRepository;
     private final MenuRepository menuRepository;
@@ -106,5 +113,9 @@ public class AdminService {
             return false;
         }
 
+    }
+
+    public String createAdminToken(LoginDto loginDto){
+        return JwtUtil.createJwt(loginDto.getU_id(),secretKey,expiredMs);
     }
 }
