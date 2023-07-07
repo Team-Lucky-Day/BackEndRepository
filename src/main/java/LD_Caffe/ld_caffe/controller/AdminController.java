@@ -1,5 +1,6 @@
 package LD_Caffe.ld_caffe.controller;
 
+import LD_Caffe.ld_caffe.domain.MenuEntity;
 import LD_Caffe.ld_caffe.dto.MenuDto;
 import LD_Caffe.ld_caffe.repository.MenuRepository;
 import LD_Caffe.ld_caffe.service.AdminService;
@@ -8,29 +9,35 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.text.html.parser.Entity;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
-@RestController
+@Controller
 @CrossOrigin(origins = "http://localhost:3000") // 서버에서 CORS 관리할때 사용
 @RequiredArgsConstructor
 @RequestMapping("/admin")
 public class AdminController {
 
-    private final AdminService adminService;
+    public final AdminService adminService;
     private final MenuRepository menuRepository;
 
+    @ResponseBody
     @GetMapping("/users")
     public ArrayList<String> AlluserInfo(){
 
@@ -47,12 +54,15 @@ public class AdminController {
     @DeleteMapping("/users/delete/{name}")
     public ResponseEntity<String> deleteUserInfo(@PathVariable String name){
         System.out.println(name);
-        if (adminService.deleteUser(name)){
+
+        Integer result = adminService.deleteUser(name);
+        System.out.println("삭제결과" + result);
+        if (result == 1){
             System.out.println("데이터 찾음 // 데이터 삭제 완료");
             return ResponseEntity.ok("데이터 삭제 완료");
         }else {
             System.out.println("데이터 없음 // 데이터 삭제 실패");
-            return ResponseEntity.notFound().build();
+            return null;
         }
 
     }
@@ -77,7 +87,7 @@ public class AdminController {
             String fileName = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
 
             // 이미지 파일 저장 경로
-            String saveDir = "/Users/jujaeyoung/desktop/images";
+            String saveDir = "/Users/jujaeyoung/desktop/images/";
             Path filePath = Paths.get(saveDir, fileName);
 
             // 이미지 파일 저장
@@ -104,6 +114,7 @@ public class AdminController {
         }
     }
 
+    @ResponseBody
     @GetMapping("/menuList")
     public ResponseEntity<List<MenuDto>> MenuList() throws IOException {
 
@@ -119,45 +130,30 @@ public class AdminController {
         return new ResponseEntity<>(menuInfo, headers, HttpStatus.OK);
     }
 
-    @PostMapping("/test")
-    public ResponseEntity<String> test(@RequestParam("image") MultipartFile file){
+    @DeleteMapping("/menu/delete/{menuName}")
+    public ResponseEntity<String> deleteMenuInfo(@PathVariable String menuName){
+        System.out.println(menuName);
 
-        System.out.println("File Name : " + file.getOriginalFilename());
-
-        System.out.println("파일 서버저장 시작");
         try{
 
-            // 파일 이름 생성
-            String fileName = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
+            Integer result = adminService.deleteMenu(menuName);
 
-            // 이미지 파일 저장 경로
-            String saveDir = "/Users/jujaeyoung/desktop/images";
-            Path filePath = Paths.get(saveDir, fileName);
+            if (result == 1){
+                System.out.println(" 메뉴 삭제 완료");
+                return ResponseEntity.ok("데이터 삭제 완료");
+            }else {
+                System.out.println("데이터 없음 // 데이터 삭제 실패");
+                return null;
+            }
 
-            // 이미지 파일 저장
-            File saveFile = filePath.toFile();
-            file.transferTo(saveFile);
-
-            return ResponseEntity.ok("서버 저장 성공");
-
-        }catch (Exception error){
-            System.err.println(error.getMessage());
+        }catch(Exception error){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("경로 저장 실패");
+                    .body("메뉴 삭제 실패");
         }
 
+
     }
 
-    @GetMapping("/getTest")
-    public ResponseEntity<byte[]> getImage() throws IOException{
 
-        File file = new File("/Users/jujaeyoung/desktop/images/c1.jpg");
-        byte[] imageBytes = Files.readAllBytes(file.toPath());
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.IMAGE_JPEG);
-
-        return new ResponseEntity<>(imageBytes, headers ,HttpStatus.OK);
-    }
 
 }
