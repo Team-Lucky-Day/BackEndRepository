@@ -1,6 +1,5 @@
 package LD_Caffe.ld_caffe.controller;
 
-import LD_Caffe.ld_caffe.domain.MenuEntity;
 import LD_Caffe.ld_caffe.dto.MenuDto;
 import LD_Caffe.ld_caffe.repository.MenuRepository;
 import LD_Caffe.ld_caffe.service.AdminService;
@@ -9,35 +8,29 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.html.parser.Entity;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 
-@Controller
+@RestController
 @CrossOrigin(origins = "http://localhost:3000") // 서버에서 CORS 관리할때 사용
 @RequiredArgsConstructor
 @RequestMapping("/admin")
 public class AdminController {
 
-    public final AdminService adminService;
+    private final AdminService adminService;
     private final MenuRepository menuRepository;
 
-    @ResponseBody
     @GetMapping("/users")
     public ArrayList<String> AlluserInfo(){
 
@@ -54,15 +47,12 @@ public class AdminController {
     @DeleteMapping("/users/delete/{name}")
     public ResponseEntity<String> deleteUserInfo(@PathVariable String name){
         System.out.println(name);
-
-        Integer result = adminService.deleteUser(name);
-        System.out.println("삭제결과" + result);
-        if (result == 1){
+        if (adminService.deleteUser(name)){
             System.out.println("데이터 찾음 // 데이터 삭제 완료");
             return ResponseEntity.ok("데이터 삭제 완료");
         }else {
             System.out.println("데이터 없음 // 데이터 삭제 실패");
-            return null;
+            return ResponseEntity.notFound().build();
         }
 
     }
@@ -114,7 +104,6 @@ public class AdminController {
         }
     }
 
-    @ResponseBody
     @GetMapping("/menuList")
     public ResponseEntity<List<MenuDto>> MenuList() throws IOException {
 
@@ -129,8 +118,6 @@ public class AdminController {
 
         return new ResponseEntity<>(menuInfo, headers, HttpStatus.OK);
     }
-
-
 
     @PostMapping("/test")
     public ResponseEntity<String> test(@RequestParam("image") MultipartFile file){

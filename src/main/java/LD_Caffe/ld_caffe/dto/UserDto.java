@@ -25,8 +25,6 @@ public class UserDto {
 
     private String c_number;
 
-    private String cardNum;
-
     private Integer cardPassword;
 
     private Integer cardCvc;
