@@ -1,6 +1,5 @@
 package LD_Caffe.ld_caffe.controller;
 
-import LD_Caffe.ld_caffe.domain.MenuEntity;
 import LD_Caffe.ld_caffe.dto.MenuDto;
 import LD_Caffe.ld_caffe.repository.MenuRepository;
 import LD_Caffe.ld_caffe.service.AdminService;
@@ -14,28 +13,22 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.html.parser.Entity;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-
-@Controller
+@RestController
 @CrossOrigin(origins = "http://localhost:3000") // 서버에서 CORS 관리할때 사용
 @RequiredArgsConstructor
 @RequestMapping("/admin")
 public class AdminController {
 
-    public final AdminService adminService;
-    private final MenuRepository menuRepository;
+    private final AdminService adminService;
+
 
     @ResponseBody
     @GetMapping("/users")
@@ -55,14 +48,12 @@ public class AdminController {
     public ResponseEntity<String> deleteUserInfo(@PathVariable String name){
         System.out.println(name);
 
-        Integer result = adminService.deleteUser(name);
-        System.out.println("삭제결과" + result);
-        if (result == 1){
+        if (adminService.deleteUser(name)){
             System.out.println("데이터 찾음 // 데이터 삭제 완료");
             return ResponseEntity.ok("데이터 삭제 완료");
         }else {
             System.out.println("데이터 없음 // 데이터 삭제 실패");
-            return null;
+            return ResponseEntity.notFound().build();
         }
 
     }
@@ -114,7 +105,6 @@ public class AdminController {
         }
     }
 
-    @ResponseBody
     @GetMapping("/menuList")
     public ResponseEntity<List<MenuDto>> MenuList() throws IOException {
 
@@ -135,23 +125,18 @@ public class AdminController {
         System.out.println(menuName);
 
         try{
-
-            Integer result = adminService.deleteMenu(menuName);
-
-            if (result == 1){
+            if (adminService.deleteMenu(menuName)){
                 System.out.println(" 메뉴 삭제 완료");
                 return ResponseEntity.ok("데이터 삭제 완료");
             }else {
                 System.out.println("데이터 없음 // 데이터 삭제 실패");
-                return null;
+                return ResponseEntity.notFound().build();
             }
 
         }catch(Exception error){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("메뉴 삭제 실패");
         }
-
-
     }
 
 

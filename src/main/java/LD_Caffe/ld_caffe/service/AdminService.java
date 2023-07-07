@@ -36,7 +36,7 @@ public class AdminService {
     }
 
 
-    public Integer deleteUser(String userName){
+    public boolean deleteUser(String userName){
         System.out.println(userName);
         // userName로 userId찾아서 그값으로 데이터 삭제
         Optional<UserEntity> userInfo = userRepository.findByuserName(userName);
@@ -45,10 +45,10 @@ public class AdminService {
             System.out.println("데이터베이스에서 유저명을 찾았습니다.");
             String userId = userInfo.get().getUserId();
             userRepository.deleteById(userId);
-            return 1;
+            return true;
         }else {
             System.out.println("데이터베이스에서 해당 유저명이 없습니다.");
-            return 0;
+            return false;
         }
     }
 
@@ -87,8 +87,6 @@ public class AdminService {
 
             menuDto.setImageBytes(imageBytes);
 
-
-
             menuInfo.add(menuDto);
         }
 
@@ -96,16 +94,16 @@ public class AdminService {
         }
 
 
-    public Integer deleteMenu(String menuName) {
+    public boolean deleteMenu(String menuName) {
 
         Optional<MenuEntity> menuInfo = menuRepository.findByMenuName(menuName);
 
         if (menuInfo.isPresent()){
             Integer menuCode = menuInfo.get().getMenuCode();
             menuRepository.deleteById(menuCode);
-            return 1;
+            return true;
         }else {
-            return 2;
+            return false;
         }
 
     }
