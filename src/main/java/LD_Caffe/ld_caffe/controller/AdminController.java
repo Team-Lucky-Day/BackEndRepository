@@ -28,14 +28,16 @@ import java.util.Optional;
 import java.util.UUID;
 
 
-@RestController
+@Controller
 @CrossOrigin(origins = "http://localhost:3000") // 서버에서 CORS 관리할때 사용
 @RequiredArgsConstructor
 @RequestMapping("/admin")
 public class AdminController {
 
-    private final AdminService adminService;
+    public final AdminService adminService;
+    private final MenuRepository menuRepository;
 
+    @ResponseBody
     @GetMapping("/users")
     public ArrayList<String> AlluserInfo(){
 
@@ -52,13 +54,17 @@ public class AdminController {
     @DeleteMapping("/users/delete/{name}")
     public ResponseEntity<String> deleteUserInfo(@PathVariable String name){
         System.out.println(name);
-        if (adminService.deleteUser(name)){
+
+        Integer result = adminService.deleteUser(name);
+        System.out.println("삭제결과" + result);
+        if (result == 1){
             System.out.println("데이터 찾음 // 데이터 삭제 완료");
             return ResponseEntity.ok("데이터 삭제 완료");
         }else {
             System.out.println("데이터 없음 // 데이터 삭제 실패");
-            return ResponseEntity.notFound().build();
+            return null;
         }
+
     }
 
     // 메뉴 데이터베이스 저장
@@ -108,6 +114,7 @@ public class AdminController {
         }
     }
 
+    @ResponseBody
     @GetMapping("/menuList")
     public ResponseEntity<List<MenuDto>> MenuList() throws IOException {
 
@@ -128,12 +135,15 @@ public class AdminController {
         System.out.println(menuName);
 
         try{
-            if (adminService.deleteMenu(menuName)){
+
+            Integer result = adminService.deleteMenu(menuName);
+
+            if (result == 1){
                 System.out.println(" 메뉴 삭제 완료");
                 return ResponseEntity.ok("데이터 삭제 완료");
             }else {
                 System.out.println("데이터 없음 // 데이터 삭제 실패");
-                return ResponseEntity.notFound().build();
+                return null;
             }
 
         }catch(Exception error){

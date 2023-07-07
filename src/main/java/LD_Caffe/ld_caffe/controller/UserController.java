@@ -23,6 +23,19 @@ public class UserController {
     public final CardRepository cardRepository;
     public final UserRepository userRepository;
 
+//    @GetMapping("/list")  // 모든 유저 조회 메서드
+//    public String findAllUser(Model model){
+//        List<UserEntity> userList = userService.findAllUser();
+//        model.addAttribute("userList",userList);
+//        return "userList";
+//    }
+
+//    @GetMapping("/{u_id}")  // u_id 값으로 특정 유저 조회 메서드
+//    public String userInfo(@PathVariable("u_id")String u_id,Model model){
+//        Optional<UserEntity> user = userService.findUserById(u_id);
+//        model.addAttribute("user",user.get());
+//        return "userInfo";
+//    }
 
     @PostMapping("/signup")   // 회원가입 메서드
     public ResponseEntity<String> signUpUser(@RequestBody UserDto userDTO){
