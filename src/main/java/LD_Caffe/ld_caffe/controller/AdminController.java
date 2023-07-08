@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.swing.text.html.parser.Entity;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -154,6 +155,62 @@ public class AdminController {
 
     }
 
+    @PutMapping("/menu/update/{menuName}")
+    public ResponseEntity<?> updateMenuInfo(@PathVariable String menuName,
+                                            @RequestParam("editName") String name,
+                                            @RequestParam(value = "editImage", required = false) MultipartFile image,
+                                            @RequestParam("editPrice") Integer price,
+                                            @RequestParam("editContent") String content){
+
+        System.out.println("Image : " + image);
+        System.out.println("수정할 메뉴의 원래 이름 : "+menuName);
+        System.out.println("수정 될 메뉴 가격 : " + price);
+        System.out.println("수정 될 메뉴 설명 : " + content);
+
+        try{
+            System.out.println("Try로 넘어감");
+            String imagePath = null;
+            String fileName = "";
+            String saveDir = "";
+
+            if (image != null){
+                //파일 이름 생성
+                fileName = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(image.getOriginalFilename());
+                saveDir = "/Users/jujaeyoung/desktop/images/";
+                Path path = Paths.get(saveDir,fileName);
+
+                // 이미지 파일 저장
+                File saveFile = path.toFile();
+                image.transferTo(saveFile);
+
+                imagePath = saveDir + fileName;
+            }
+
+            System.out.println("adminService로 넘어감");
+            ArrayList<Object> isUpdateSuccess = adminService.updateMenu(menuName, name, price, content, imagePath);
+            System.out.println("adminService로직 끝");
+
+            if (isUpdateSuccess.get(0).equals(true)){
+               System.out.println("이미지 업데이트 성공!");
+                System.out.println(isUpdateSuccess.get(0));
+                System.out.println(isUpdateSuccess.get(1));
+
+               //기존에 존재하던 이미지 삭제
+                 if ( image != null ){ //이미지 변수가 있을때만 기존 이미지 파일 삭제
+                    adminService.deleteImageFile((String) isUpdateSuccess.get(1));
+                }
+
+
+                return ResponseEntity.ok().body("이미지 업데이트 완료!");
+            }else {
+                return ResponseEntity.notFound().build();
+            }
+
+
+        }catch(Exception error){
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 
 }

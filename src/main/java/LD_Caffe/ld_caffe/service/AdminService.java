@@ -7,11 +7,15 @@ import LD_Caffe.ld_caffe.repository.MenuRepository;
 import LD_Caffe.ld_caffe.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.swing.event.MenuEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Array;
 import java.util.*;
 
@@ -109,4 +113,64 @@ public class AdminService {
         }
 
     }
+
+
+    public void deleteImageFile(String imagePath){
+        try {
+            System.out.println("기존 이미지 경로 : " + imagePath);
+            Path filePath = Paths.get(imagePath);
+            Files.delete(filePath);
+            System.out.println("기존 이미지가 삭제되었습니다.");
+        } catch (NoSuchFileException e) {
+            e.printStackTrace();
+            System.out.println("삭제하고자 하는 이미지 파일이 없습니다. 이미지 경로=>" + imagePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("삭제하려는 이미지 파일 삭제 중 오류 발생. 이미지 경로 => " + imagePath);
+        }
+    }
+
+    public ArrayList<Object> updateMenu(String menuName,
+                              String name,
+                              Integer price,
+                              String content,
+                              String imagePath){
+
+        System.out.println("adminService에서 메뉴 이름으로 정보 찾기 시작");
+        Optional<MenuEntity> menuInfo = menuRepository.findByMenuName(menuName);
+        System.out.println("adminService에서 메뉴 이름으로 정보 찾기 성공");
+
+        String preImagePath = menuInfo.get().getMenuImagePath();
+        ArrayList<Object> result = new ArrayList<>();
+        if (menuInfo.isPresent()){
+
+            try{
+                MenuEntity menuInfoToUpdate = menuInfo.get();
+                menuInfoToUpdate.setMenuName(name);
+                menuInfoToUpdate.setMenuPrice(price);
+                menuInfoToUpdate.setMenuContents(content);
+
+                if(imagePath != null){
+                    menuInfoToUpdate.setMenuImagePath(imagePath);
+                }
+
+                menuRepository.save(menuInfoToUpdate);
+
+                result.add(true);
+                result.add(preImagePath);
+                return result;
+            }catch(Exception error){
+                System.err.println(error.getMessage());
+
+                result.add(false);
+                return result;
+            }
+
+        }else {
+            System.out.println("존재하지 않는 데이터입니다.");
+            result.add(false);
+            return result;
+        }
+    }
+
 }
