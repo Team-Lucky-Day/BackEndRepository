@@ -2,10 +2,13 @@ package LD_Caffe.ld_caffe.service;
 
 import LD_Caffe.ld_caffe.domain.MenuEntity;
 import LD_Caffe.ld_caffe.domain.UserEntity;
+import LD_Caffe.ld_caffe.dto.LoginDto;
 import LD_Caffe.ld_caffe.dto.MenuDto;
 import LD_Caffe.ld_caffe.repository.MenuRepository;
 import LD_Caffe.ld_caffe.repository.UserRepository;
+import LD_Caffe.ld_caffe.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +25,10 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class AdminService {
+    @Value("${jwt.secret}")
+    private String secretKey;
+
+    private final long expiredMs = 1000 * 60 * 30L;
 
     private final UserRepository userRepository;
     private final MenuRepository menuRepository;
@@ -40,7 +47,7 @@ public class AdminService {
     }
 
 
-    public Integer deleteUser(String userName){
+    public boolean deleteUser(String userName){
         System.out.println(userName);
         // userName로 userId찾아서 그값으로 데이터 삭제
         Optional<UserEntity> userInfo = userRepository.findByuserName(userName);
@@ -49,10 +56,10 @@ public class AdminService {
             System.out.println("데이터베이스에서 유저명을 찾았습니다.");
             String userId = userInfo.get().getUserId();
             userRepository.deleteById(userId);
-            return 1;
+            return true;
         }else {
             System.out.println("데이터베이스에서 해당 유저명이 없습니다.");
-            return 0;
+            return false;
         }
     }
 
@@ -100,18 +107,22 @@ public class AdminService {
         }
 
 
-    public Integer deleteMenu(String menuName) {
+    public boolean deleteMenu(String menuName) {
 
         Optional<MenuEntity> menuInfo = menuRepository.findByMenuName(menuName);
 
         if (menuInfo.isPresent()){
             Integer menuCode = menuInfo.get().getMenuCode();
             menuRepository.deleteById(menuCode);
-            return 1;
+            return true;
         }else {
-            return 2;
+            return false;
         }
 
+    }
+
+    public String createAdminToken(LoginDto loginDto){
+        return JwtUtil.createJwt(loginDto.getU_id(),secretKey,expiredMs);
     }
 
 

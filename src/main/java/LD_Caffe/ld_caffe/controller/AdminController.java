@@ -1,80 +1,70 @@
 package LD_Caffe.ld_caffe.controller;
 
-import LD_Caffe.ld_caffe.domain.MenuEntity;
+import LD_Caffe.ld_caffe.dto.LoginDto;
 import LD_Caffe.ld_caffe.dto.MenuDto;
-import LD_Caffe.ld_caffe.repository.MenuRepository;
 import LD_Caffe.ld_caffe.service.AdminService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.core.Authentication;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.html.parser.Entity;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-
-@Controller
+@RestController
 @CrossOrigin(origins = "http://localhost:3000") // 서버에서 CORS 관리할때 사용
 @RequiredArgsConstructor
 @RequestMapping("/admin")
 public class AdminController {
 
-    public final AdminService adminService;
-    private final MenuRepository menuRepository;
+    private final AdminService adminService;
+    @Value("${ADMIN.PW}")
+    private String ADMIN_PW;
 
-    @ResponseBody
-    @GetMapping("/users")
-    public ArrayList<String> AlluserInfo(){
 
-//        로그인한 사람이 관리자 계정인지 확인하기
-
-//        ArrayList<String> usersInfo = new ArrayList<>();
-//        usersInfo.add("TestData1");
-//        usersInfo.add("TestData2");
-//        usersInfo.add("TestData3");
-
-        return adminService.getUserNames();
+    private boolean amIAdmin(Authentication authentication){  // ADMIN 계정 확인 메서드
+        return authentication.getName().equals("ADMIN"); // ADMIN 이 맞다면 TRUE 아니면 FALSE
     }
 
-    @DeleteMapping("/users/delete/{name}")
-    public ResponseEntity<String> deleteUserInfo(@PathVariable String name){
-        System.out.println(name);
+    @DeleteMapping("/users/delete/{name}")  // 유저 삭제 메서드
+    public ResponseEntity<String> deleteUserInfo(@PathVariable String name,Authentication authentication){
 
-        Integer result = adminService.deleteUser(name);
-        System.out.println("삭제결과" + result);
-        if (result == 1){
+        if (!amIAdmin(authentication)) { // ADMIN 이 아니라면 여기서 리턴문으로 빠져나감
+            return ResponseEntity.status(403).body("유효한 접근이 아닙니다.");
+        }
+
+        if (adminService.deleteUser(name)){
             System.out.println("데이터 찾음 // 데이터 삭제 완료");
             return ResponseEntity.ok("데이터 삭제 완료");
         }else {
             System.out.println("데이터 없음 // 데이터 삭제 실패");
-            return null;
+            return ResponseEntity.notFound().build();
         }
-
     }
 
-    // 메뉴 데이터베이스 저장
+    // 메뉴 데이터베이스 저장 메서드
     @PostMapping("/menu")
     public ResponseEntity<String> addMenu(@RequestParam("image") MultipartFile file,
                                           @RequestParam("category") String category,
                                           @RequestParam("name") String name,
                                           @RequestParam("content") String content,
-                                          @RequestParam("price") Integer price){
+                                          @RequestParam("price") Integer price,
+                                          Authentication authentication){
+
+        if (!amIAdmin(authentication)) {  // 어드민이 아니라면 여기서 리턴문으로 블락
+            return ResponseEntity.status(403).body("유효한 접근이 아닙니다.");
+        }
 
         System.out.println("<< 추가할 메뉴 >>");
         System.out.println("Category : " +category);
@@ -115,8 +105,7 @@ public class AdminController {
         }
     }
 
-    @ResponseBody
-    @GetMapping("/menuList")
+    @GetMapping("/menuList")  // 메뉴 리스트 메서드
     public ResponseEntity<List<MenuDto>> MenuList() throws IOException {
 
         List<MenuDto> menuInfo = adminService.getAllMenuInfo();
@@ -131,27 +120,45 @@ public class AdminController {
         return new ResponseEntity<>(menuInfo, headers, HttpStatus.OK);
     }
 
-    @DeleteMapping("/menu/delete/{menuName}")
-    public ResponseEntity<String> deleteMenuInfo(@PathVariable String menuName){
+    @DeleteMapping("/menu/delete/{menuName}")   // 메뉴삭제 메서드
+    public ResponseEntity<String> deleteMenuInfo(@PathVariable String menuName,Authentication authentication){
+        if (!amIAdmin(authentication)) { // ADMIN 이 아니라면 여기서 블락
+            return ResponseEntity.status(403).body("유효한 접근이 아닙니다.");
+        }
         System.out.println(menuName);
-
         try{
-
-            Integer result = adminService.deleteMenu(menuName);
-
-            if (result == 1){
+            if (adminService.deleteMenu(menuName)){
                 System.out.println(" 메뉴 삭제 완료");
                 return ResponseEntity.ok("데이터 삭제 완료");
             }else {
                 System.out.println("데이터 없음 // 데이터 삭제 실패");
-                return null;
+                return ResponseEntity.notFound().build();
             }
 
         }catch(Exception error){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("메뉴 삭제 실패");
         }
+    }
 
+    @PostMapping("/login")
+    public ResponseEntity<String> adminLogin(@RequestBody LoginDto loginDto){ // 어드민 로그인, 토큰발행 메서드
+        System.out.println("ADMIN_PW = " + ADMIN_PW);
+        System.out.println("어드민 비밀번호 시도 = " + loginDto.getU_pw());
+        if (loginDto.getU_pw().equals(ADMIN_PW)) { // 유저가 입력한 비밀번호가 어드민 비밀번호가 맞는경우
+            LoginDto admin = new LoginDto();
+            admin.setU_id("ADMIN");
+            admin.setU_pw(ADMIN_PW);
+            String token = adminService.createAdminToken(admin);  // ADMIN 이라는 ID 값을 가진 토큰 발행
+            if(token.equals("0")){  // 로그인할때 쓰던 코드 복붙
+                return ResponseEntity.badRequest().build();
+            }else{
+                System.out.println("ADMIN_token = " + token);
+                return ResponseEntity.ok().body(token);
+            }
+        }else{
+            return ResponseEntity.badRequest().body("올바르지 않은 비밀번호입니다.");
+        }
 
     }
 
@@ -191,12 +198,12 @@ public class AdminController {
             System.out.println("adminService로직 끝");
 
             if (isUpdateSuccess.get(0).equals(true)){
-               System.out.println("이미지 업데이트 성공!");
+                System.out.println("이미지 업데이트 성공!");
                 System.out.println(isUpdateSuccess.get(0));
                 System.out.println(isUpdateSuccess.get(1));
 
-               //기존에 존재하던 이미지 삭제
-                 if ( image != null ){ //이미지 변수가 있을때만 기존 이미지 파일 삭제
+                //기존에 존재하던 이미지 삭제
+                if ( image != null ){ //이미지 변수가 있을때만 기존 이미지 파일 삭제
                     adminService.deleteImageFile((String) isUpdateSuccess.get(1));
                 }
 
@@ -211,6 +218,4 @@ public class AdminController {
             return ResponseEntity.notFound().build();
         }
     }
-
-
 }

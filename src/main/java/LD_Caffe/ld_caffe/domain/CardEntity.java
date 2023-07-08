@@ -2,6 +2,7 @@ package LD_Caffe.ld_caffe.domain;
 
 import LD_Caffe.ld_caffe.dto.TestDto;
 import LD_Caffe.ld_caffe.dto.UserDto;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.TypeAlias;
@@ -15,6 +16,7 @@ import javax.persistence.Table;
 @Setter
 @Entity
 @Table(name =" card")
+@Builder
 public class CardEntity {
 
     @Id
@@ -31,14 +33,13 @@ public class CardEntity {
     private String cardDate;
 
     public static CardEntity toCardEntity(UserDto userDto){
-
         System.out.println("Card dto->entity ");
-        CardEntity cardEntity = new CardEntity();
-        cardEntity.setCardNumber(userDto.getCardNum());
-        cardEntity.setCardPassword(userDto.getCardPassword());
-        cardEntity.setCardCvc(userDto.getCardCvc());
-        cardEntity.setCardDate(userDto.getCardDate());
-        return cardEntity;
+        return CardEntity.builder()
+                .cardNumber(userDto.getC_number())
+                .cardCvc(userDto.getCardCvc())
+                .cardDate(userDto.getCardDate())
+                .cardPassword(userDto.getCardPassword())
+                .build();
     }
 
     // <<<TEST>>>
