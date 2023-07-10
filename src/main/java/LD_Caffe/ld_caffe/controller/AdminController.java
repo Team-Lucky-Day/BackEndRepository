@@ -37,6 +37,12 @@ public class AdminController {
         return authentication.getName().equals("ADMIN"); // ADMIN 이 맞다면 TRUE 아니면 FALSE
     }
 
+    @PostMapping("/users")
+    public ArrayList<String> AlluserInfo(Authentication authentication){
+
+        return adminService.getUserNames();
+    }
+
     @DeleteMapping("/users/delete/{name}")  // 유저 삭제 메서드
     public ResponseEntity<String> deleteUserInfo(@PathVariable String name,Authentication authentication){
 
@@ -52,6 +58,7 @@ public class AdminController {
             return ResponseEntity.notFound().build();
         }
     }
+
 
     // 메뉴 데이터베이스 저장 메서드
     @PostMapping("/menu")
