@@ -10,16 +10,13 @@ import LD_Caffe.ld_caffe.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.event.MenuEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Array;
 import java.util.*;
 
 @Service
@@ -34,16 +31,9 @@ public class AdminService {
     private final MenuRepository menuRepository;
 
     //유저 이름 가져오기
-    public ArrayList<String> getUserNames(){
+    public List<UserEntity> getUserInfoList(){
 
-        List<UserEntity> userInfo = userRepository.findAll();
-        ArrayList<String> userNames = new ArrayList<>();
-
-        for (UserEntity i : userInfo){
-            userNames.add(i.getUserName());
-        }
-
-        return userNames;
+        return userRepository.findAll();
     }
 
 

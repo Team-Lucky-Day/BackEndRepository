@@ -1,5 +1,6 @@
 package LD_Caffe.ld_caffe.controller;
 
+import LD_Caffe.ld_caffe.domain.UserEntity;
 import LD_Caffe.ld_caffe.dto.LoginDto;
 import LD_Caffe.ld_caffe.dto.MenuDto;
 import LD_Caffe.ld_caffe.service.AdminService;
@@ -38,9 +39,11 @@ public class AdminController {
     }
 
     @PostMapping("/users")
-    public ArrayList<String> AlluserInfo(Authentication authentication){
-
-        return adminService.getUserNames();
+    public ResponseEntity<List<UserEntity>> AlluserInfo(Authentication authentication){
+        if (!amIAdmin(authentication)) {  // ADMIN 이 아니면 여기서 거르기
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().body(adminService.getUserInfoList());
     }
 
     @DeleteMapping("/users/delete/{name}")  // 유저 삭제 메서드
@@ -85,7 +88,7 @@ public class AdminController {
             String fileName = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
 
             // 이미지 파일 저장 경로
-            String saveDir = "/Users/jujaeyoung/desktop/images/";
+            String saveDir = "C:/VSCODE workspace/img/";
             Path filePath = Paths.get(saveDir, fileName);
 
             // 이미지 파일 저장
@@ -190,7 +193,7 @@ public class AdminController {
             if (image != null){
                 //파일 이름 생성
                 fileName = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(image.getOriginalFilename());
-                saveDir = "/Users/jujaeyoung/desktop/images/";
+                saveDir = "C:/VSCODE workspace/img/";
                 Path path = Paths.get(saveDir,fileName);
 
                 // 이미지 파일 저장
