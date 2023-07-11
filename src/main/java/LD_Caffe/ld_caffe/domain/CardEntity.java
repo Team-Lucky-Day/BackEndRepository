@@ -2,9 +2,7 @@ package LD_Caffe.ld_caffe.domain;
 
 import LD_Caffe.ld_caffe.dto.TestDto;
 import LD_Caffe.ld_caffe.dto.UserDto;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.TypeAlias;
 
 import javax.persistence.Column;
@@ -15,8 +13,10 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Entity
-@Table(name =" card")
+@Table(name ="card")
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CardEntity {
 
     @Id
