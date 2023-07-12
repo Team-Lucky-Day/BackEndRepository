@@ -20,8 +20,8 @@ public class HistoryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int h_code;
 
-    @Column
-    private String u_id;
+    @Column(name="u_id")
+    private String userId;
 
     @Column
     private int h_price;
@@ -31,7 +31,7 @@ public class HistoryEntity {
 
     public static HistoryEntity toHistoryEntity(HistoryDto historyDto) {
         return HistoryEntity.builder()
-                .u_id(historyDto.getU_id())
+                .userId(historyDto.getU_id())
                 .h_price(historyDto.getH_price())
                 .h_date(historyDto.getH_date())
                 .build();
