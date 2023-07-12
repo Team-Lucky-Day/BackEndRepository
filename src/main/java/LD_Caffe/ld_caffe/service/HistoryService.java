@@ -8,20 +8,23 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+
 @RequiredArgsConstructor
+@Service
 public class HistoryService {
 
     private final HistoryRepository historyRepository;
 
     public void saveHistory(HistoryDto historyDto) {
-        HistoryEntity historyEntity = HistoryEntity.toHistoryEntity(historyDto);
-        historyRepository.save(historyEntity);
+            HistoryEntity historyEntity = HistoryEntity.toHistoryEntity(historyDto);
+            historyRepository.save(historyEntity);
     }
 
     public List<HistoryEntity> getHistory(String userId){
-        return historyRepository.findAllByU_id(userId);
-    }
+            return historyRepository.findAllByUserId(userId);
+        }
 
 
 }
+
+
