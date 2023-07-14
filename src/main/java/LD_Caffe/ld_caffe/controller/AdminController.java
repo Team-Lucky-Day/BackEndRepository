@@ -41,7 +41,7 @@ public class AdminController {
     @PostMapping("/users")
     public ResponseEntity<List<UserEntity>> AlluserInfo(Authentication authentication){
         if (!amIAdmin(authentication)) {  // ADMIN 이 아니면 여기서 거르기
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(400).build();
         }
         return ResponseEntity.ok().body(adminService.getUserInfoList());
     }

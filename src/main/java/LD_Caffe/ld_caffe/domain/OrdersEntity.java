@@ -1,29 +1,27 @@
 package LD_Caffe.ld_caffe.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Table(name = "orders")
+@Builder
 public class OrdersEntity {
 
     @Id
-    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int o_code;
 
     @Column(nullable = false)
-    @CreatedDate
     private Date o_date;
 
     @Column(nullable = false)
@@ -31,5 +29,13 @@ public class OrdersEntity {
 
     @Column(nullable = false)
     private int t_code;
+
+    public static OrdersEntity toOrdersEntity(String userId) {
+        return OrdersEntity.builder()
+                .u_id(userId)
+                .o_date(Date.valueOf(LocalDate.now()))
+                .build();
+
+    }
 
 }

@@ -1,16 +1,12 @@
 package LD_Caffe.ld_caffe.controller;
 
-import LD_Caffe.ld_caffe.domain.HistoryEntity;
 import LD_Caffe.ld_caffe.dto.LoginDto;
 import LD_Caffe.ld_caffe.dto.UserDto;
-import LD_Caffe.ld_caffe.service.HistoryService;
 import LD_Caffe.ld_caffe.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -19,7 +15,6 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final HistoryService historyService;
 
     @PostMapping("/signup")   // 회원가입 메서드
     public ResponseEntity<String> signUpUser(@RequestBody UserDto userDTO) {
@@ -57,9 +52,5 @@ public class UserController {
         return ResponseEntity.ok().body(userName);
     }
 
-    @PostMapping("/getHistory") // userId로 유저 주문목록 뿌려주는 메서드
-    public ResponseEntity<List<HistoryEntity>> getAllHistory(Authentication authentication){
-        return ResponseEntity.ok().body(historyService.getHistory(authentication.getName()));
 
-    }
 }
