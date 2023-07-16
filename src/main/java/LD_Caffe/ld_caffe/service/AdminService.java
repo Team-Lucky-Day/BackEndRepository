@@ -4,6 +4,7 @@ import LD_Caffe.ld_caffe.domain.MenuEntity;
 import LD_Caffe.ld_caffe.domain.UserEntity;
 import LD_Caffe.ld_caffe.dto.LoginDto;
 import LD_Caffe.ld_caffe.dto.MenuDto;
+import LD_Caffe.ld_caffe.dto.UserDto;
 import LD_Caffe.ld_caffe.repository.MenuRepository;
 import LD_Caffe.ld_caffe.repository.UserRepository;
 import LD_Caffe.ld_caffe.utils.JwtUtil;
@@ -31,9 +32,22 @@ public class AdminService {
     private final MenuRepository menuRepository;
 
     //유저 이름 가져오기
-    public List<UserEntity> getUserInfoList(){
+    public List<UserDto> getUserInfoList(){
 
-        return userRepository.findAll();
+        List<UserEntity> allUserInfo = userRepository.findAll();
+        List<UserDto> userInfoList = new ArrayList<>();
+
+        for(UserEntity userInfo : allUserInfo){
+            UserDto userDto = new UserDto();
+            userDto.setU_name(userInfo.getUserName());
+            userDto.setU_phone(userInfo.getUserPhone());
+            userDto.setU_email(userInfo.getUserEmail());
+            userDto.setC_number(userInfo.getUserCardNum());
+
+            userInfoList.add(userDto);
+        }
+
+        return userInfoList;
     }
 
 

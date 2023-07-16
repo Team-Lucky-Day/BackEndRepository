@@ -1,12 +1,18 @@
 package LD_Caffe.ld_caffe.controller;
 
+import LD_Caffe.ld_caffe.dto.FavoriteDto;
 import LD_Caffe.ld_caffe.dto.LoginDto;
 import LD_Caffe.ld_caffe.dto.UserDto;
+import LD_Caffe.ld_caffe.service.FavoriteService;
 import LD_Caffe.ld_caffe.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -15,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final FavoriteService favoriteService;
 
     @PostMapping("/signup")   // 회원가입 메서드
     public ResponseEntity<String> signUpUser(@RequestBody UserDto userDTO) {
@@ -50,6 +57,19 @@ public class UserController {
     public ResponseEntity<String> getUserName(Authentication authentication) {
         String userName = userService.findUserById(authentication.getName()).get().getUserName();
         return ResponseEntity.ok().body(userName);
+    }
+
+    @PostMapping("/favorite")
+    public ResponseEntity<List<FavoriteDto>> getAllFavoriteMenu(Authentication authentication) throws IOException {
+
+        String userCode = authentication.getName();
+        System.out.println("유저 코드 : " + userCode);
+        String userName = userService.findUserById(userCode).get().getUserName();
+
+
+        List<FavoriteDto> allFavoriteMenuInfo = favoriteService.getFavoriteMenu(userCode,userName);
+
+        return new ResponseEntity<>(allFavoriteMenuInfo, HttpStatus.OK);
     }
 
 

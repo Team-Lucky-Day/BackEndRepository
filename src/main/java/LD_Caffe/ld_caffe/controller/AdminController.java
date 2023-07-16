@@ -3,6 +3,7 @@ package LD_Caffe.ld_caffe.controller;
 import LD_Caffe.ld_caffe.domain.UserEntity;
 import LD_Caffe.ld_caffe.dto.LoginDto;
 import LD_Caffe.ld_caffe.dto.MenuDto;
+import LD_Caffe.ld_caffe.dto.UserDto;
 import LD_Caffe.ld_caffe.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,11 +40,14 @@ public class AdminController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<List<UserEntity>> AlluserInfo(Authentication authentication){
+    public ResponseEntity<List<UserDto>> AlluserInfo(Authentication authentication){
         if (!amIAdmin(authentication)) {  // ADMIN 이 아니면 여기서 거르기
             return ResponseEntity.status(400).build();
         }
-        return ResponseEntity.ok().body(adminService.getUserInfoList());
+
+        List<UserDto> userInfo = adminService.getUserInfoList();
+
+        return new ResponseEntity<>(userInfo, HttpStatus.OK);
     }
 
     @DeleteMapping("/users/delete/{name}")  // 유저 삭제 메서드
@@ -177,7 +181,12 @@ public class AdminController {
                                             @RequestParam("editName") String name,
                                             @RequestParam(value = "editImage", required = false) MultipartFile image,
                                             @RequestParam("editPrice") Integer price,
-                                            @RequestParam("editContent") String content){
+                                            @RequestParam("editContent") String content,
+                                            Authentication authentication){
+
+        if (!amIAdmin(authentication)) { // ADMIN 이 아니라면 여기서 블락
+            return ResponseEntity.status(403).body("유효한 접근이 아닙니다.");
+        }
 
         System.out.println("Image : " + image);
         System.out.println("수정할 메뉴의 원래 이름 : "+menuName);
