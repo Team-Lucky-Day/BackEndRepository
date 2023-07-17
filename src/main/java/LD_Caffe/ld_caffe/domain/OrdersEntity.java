@@ -24,15 +24,15 @@ public class OrdersEntity {
     @Column(nullable = false)
     private Date o_date;
 
-    @Column(nullable = false)
-    private String u_id;
+    @Column(nullable = false, name="u_id")
+    private String userId;
 
     @Column(nullable = false)
     private int t_code;
 
     public static OrdersEntity toOrdersEntity(String userId) {
         return OrdersEntity.builder()
-                .u_id(userId)
+                .userId(userId)
                 .o_date(Date.valueOf(LocalDate.now()))
                 .build();
 

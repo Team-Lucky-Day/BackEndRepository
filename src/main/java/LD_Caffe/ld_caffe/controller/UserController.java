@@ -2,8 +2,10 @@ package LD_Caffe.ld_caffe.controller;
 
 import LD_Caffe.ld_caffe.dto.FavoriteDto;
 import LD_Caffe.ld_caffe.dto.LoginDto;
+import LD_Caffe.ld_caffe.dto.OrderResponseDto;
 import LD_Caffe.ld_caffe.dto.UserDto;
 import LD_Caffe.ld_caffe.service.FavoriteService;
+import LD_Caffe.ld_caffe.service.OrdersService;
 import LD_Caffe.ld_caffe.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ public class UserController {
 
     private final UserService userService;
     private final FavoriteService favoriteService;
+    private final OrdersService ordersService;
 
     @PostMapping("/signup")   // 회원가입 메서드
     public ResponseEntity<String> signUpUser(@RequestBody UserDto userDTO) {
@@ -59,7 +62,7 @@ public class UserController {
         return ResponseEntity.ok().body(userName);
     }
 
-    @PostMapping("/favorite")
+    @PostMapping("/favorite") // 즐겨찾기 목록 메서드
     public ResponseEntity<List<FavoriteDto>> getAllFavoriteMenu(Authentication authentication) throws IOException {
 
         String userCode = authentication.getName();
@@ -72,5 +75,9 @@ public class UserController {
         return new ResponseEntity<>(allFavoriteMenuInfo, HttpStatus.OK);
     }
 
+    @PostMapping("/orderHistories") // 주문 목록 조회 메서드
+    public ResponseEntity<List<OrderResponseDto>> getAllOrderHistories(Authentication authentication){
+        return ordersService.getOrderHistories(authentication.getName()); 
+    }
 
 }
