@@ -3,8 +3,10 @@ package LD_Caffe.ld_caffe.controller;
 import LD_Caffe.ld_caffe.domain.UserEntity;
 import LD_Caffe.ld_caffe.dto.LoginDto;
 import LD_Caffe.ld_caffe.dto.MenuDto;
+import LD_Caffe.ld_caffe.dto.TableDto;
 import LD_Caffe.ld_caffe.dto.UserDto;
 import LD_Caffe.ld_caffe.service.AdminService;
+import LD_Caffe.ld_caffe.service.TablesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -119,8 +121,12 @@ public class AdminController {
         }
     }
 
-    @GetMapping("/menuList")  // 메뉴 리스트 메서드
-    public ResponseEntity<List<MenuDto>> MenuList() throws IOException {
+    @PostMapping("/menuList")  // 메뉴 리스트 메서드
+    public ResponseEntity<List<MenuDto>> MenuList(Authentication authentication) throws IOException {
+
+        if (!amIAdmin(authentication)) {  // 어드민이 아니라면 여기서 리턴문으로 블락
+            return ResponseEntity.status(400).build();
+        }
 
         List<MenuDto> menuInfo = adminService.getAllMenuInfo();
 
@@ -237,4 +243,17 @@ public class AdminController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    private final TablesService tableService;
+
+    @PostMapping("/tableList")
+    public ResponseEntity<List<TableDto>> tableList(Authentication authentication){
+        System.out.println("테이블 현황 조사중...");
+
+        List<TableDto> tableState = tableService.getTableState();
+
+        System.out.println("테이블 현황 조사 완료!!!");
+        return new ResponseEntity<>(tableState, HttpStatus.OK);
+    }
+
 }
