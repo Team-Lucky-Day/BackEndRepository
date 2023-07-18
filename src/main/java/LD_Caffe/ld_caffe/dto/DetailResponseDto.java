@@ -18,6 +18,8 @@ public class DetailResponseDto {
 
     private int detailPrice;
 
+    private String userName;
+
     public DetailResponseDto toDetailResponseDto(DetailEntity entity){
         return DetailResponseDto.builder()
                 .detailCount(getDetailCount())

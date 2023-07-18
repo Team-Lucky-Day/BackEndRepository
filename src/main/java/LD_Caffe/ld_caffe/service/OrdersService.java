@@ -57,6 +57,7 @@ public class OrdersService {
                         .ordersCode(j.getOrdersCode())
                         .detailCount(j.getDetailCount())
                         .detailPrice((menuRepository.findById(j.getMenuCode()).get().getMenuPrice()*(j.getDetailCount())))
+                        .userName(userId)
                         .build();
                 dto.setMenuName(menuRepository.findById(j.getMenuCode()).get().getMenuName());
                 detailResponseDtoList.add(dto);
