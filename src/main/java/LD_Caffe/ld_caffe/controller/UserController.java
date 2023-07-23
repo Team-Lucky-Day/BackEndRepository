@@ -78,8 +78,10 @@ public class UserController {
 
     @PostMapping("/orderHistories") // 주문 목록 조회 메서드
     public ResponseEntity<List<OrderResponseDto>> getAllOrderHistories(Authentication authentication){
-        return ordersService.getOrderHistories(authentication.getName()); 
+        return ResponseEntity.ok(ordersService.getOrderHistories(authentication.getName()));
     }
+
+
 
     @PostMapping("/withdrawal")
     public ResponseEntity<Boolean> deleteUser(Authentication authentication,

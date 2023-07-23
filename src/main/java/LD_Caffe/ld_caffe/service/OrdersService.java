@@ -2,6 +2,7 @@ package LD_Caffe.ld_caffe.service;
 
 import LD_Caffe.ld_caffe.domain.DetailEntity;
 import LD_Caffe.ld_caffe.domain.OrdersEntity;
+import LD_Caffe.ld_caffe.dto.ChartDto;
 import LD_Caffe.ld_caffe.dto.DetailResponseDto;
 import LD_Caffe.ld_caffe.dto.OrderDto;
 import LD_Caffe.ld_caffe.dto.OrderResponseDto;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -45,11 +47,11 @@ public class OrdersService {
         System.out.println(ordersEntity.getO_code()+"번 주문 처리완료.");
     }
 
-    public ResponseEntity<List<OrderResponseDto>> getOrderHistories(String userId){
+    public List<OrderResponseDto> getOrderHistories(String userId){  // 주문목록 조회하는 메서드
         List<OrdersEntity> ordersEntityList = ordersRepository.findAllByUserId(userId); // 토큰에 있는 Id값으로 주문목록 조회
 
         if (ordersEntityList==null){  // 주문목록이 비어있다면 404 에러 발생
-            return ResponseEntity.notFound().build();
+            return new ArrayList<OrderResponseDto>();
         }
 
         String userName = userRepository.findById(userId).get().getUserName(); // 유저명이름 찾기
@@ -78,7 +80,23 @@ public class OrdersService {
                     .build();
             finalList.add(dto);
         }
-        return ResponseEntity.ok().body(finalList);
+        return finalList;
+    }
+
+    public Map<String,Integer> getCategoryAndCount(int orderCode){ // 카테고리와 수량을 리턴하는 메서드
+        List<DetailEntity> detailList = detailRepository.findAllByOrdersCode(orderCode); // detail 리스트
+        Map<String,Integer> categoryAndCount = new HashMap<>(); // 새로운 Map 생성
+        for (DetailEntity i : detailList) {
+            String category = menuRepository.findById(i.getMenuCode()).get().getMenuCategory();
+            int count = i.getDetailCount();
+            if (categoryAndCount.get(category) == null){ // category 를 Key 로 하는 Value 가 null 이면
+                categoryAndCount.put(category,count);  // 새로 삽입
+            }else{
+                int tmp = categoryAndCount.get(category); // 아니면 원래 있던 value 에 count 를 더해서 삽입
+                categoryAndCount.put(category,tmp+count);
+            }
+        }
+        return categoryAndCount;
     }
 
 
