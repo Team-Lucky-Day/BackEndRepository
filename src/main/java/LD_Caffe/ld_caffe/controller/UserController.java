@@ -1,16 +1,17 @@
 package LD_Caffe.ld_caffe.controller;
 
-import LD_Caffe.ld_caffe.dto.FavoriteDto;
-import LD_Caffe.ld_caffe.dto.LoginDto;
-import LD_Caffe.ld_caffe.dto.OrderResponseDto;
-import LD_Caffe.ld_caffe.dto.UserDto;
+import LD_Caffe.ld_caffe.domain.ReasonEntity;
+import LD_Caffe.ld_caffe.dto.*;
+import LD_Caffe.ld_caffe.repository.ReasonRepository;
 import LD_Caffe.ld_caffe.service.FavoriteService;
 import LD_Caffe.ld_caffe.service.OrdersService;
 import LD_Caffe.ld_caffe.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.type.TrueFalseType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -78,6 +79,38 @@ public class UserController {
     @PostMapping("/orderHistories") // 주문 목록 조회 메서드
     public ResponseEntity<List<OrderResponseDto>> getAllOrderHistories(Authentication authentication){
         return ordersService.getOrderHistories(authentication.getName()); 
+    }
+
+    @PostMapping("/withdrawal")
+    public ResponseEntity<Boolean> deleteUser(Authentication authentication,
+                                              @RequestBody WithdrawalDto deleteInfo){
+        System.out.println("탈퇴 사유 : "+deleteInfo.getReason());
+        System.out.println("삭제할 유저의 패스워드 : " + deleteInfo.getPassword());
+        Boolean result = userService.withdrawalUser(
+                authentication.getName(),
+                deleteInfo.getReason(),
+                deleteInfo.getPassword()
+        );
+
+        return ResponseEntity.ok().body(result);
+    }
+
+    private final ReasonRepository reasonRepository;
+    @PostMapping("/reason")
+    public ResponseEntity<Boolean> saveReason(@RequestBody WithdrawalDto dto,
+                                              Authentication authentication){
+        try {
+            System.out.println("User Name >>> "+authentication.getName());
+            ReasonEntity reasonEntity = new ReasonEntity();
+            reasonEntity.setReason(dto.getReason());
+            reasonRepository.save(reasonEntity);
+
+            return ResponseEntity.ok().body(true);
+        } catch(Exception error){
+            System.out.println("ERROR >>> "+error);
+            return ResponseEntity.status(404).build();
+        }
+
     }
 
 }

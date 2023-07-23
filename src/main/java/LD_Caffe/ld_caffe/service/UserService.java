@@ -1,10 +1,14 @@
 package LD_Caffe.ld_caffe.service;
 
 import LD_Caffe.ld_caffe.domain.CardEntity;
+import LD_Caffe.ld_caffe.domain.OrdersEntity;
+import LD_Caffe.ld_caffe.domain.ReasonEntity;
 import LD_Caffe.ld_caffe.domain.UserEntity;
 import LD_Caffe.ld_caffe.dto.LoginDto;
 import LD_Caffe.ld_caffe.dto.UserDto;
 import LD_Caffe.ld_caffe.repository.CardRepository;
+import LD_Caffe.ld_caffe.repository.OrdersRepository;
+import LD_Caffe.ld_caffe.repository.ReasonRepository;
 import LD_Caffe.ld_caffe.repository.UserRepository;
 import LD_Caffe.ld_caffe.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -79,5 +83,51 @@ public class UserService {
         }else{
             return "0";
         }
+    }
+
+    private final ReasonRepository reasonRepository;
+    private final OrdersRepository ordersRepository;
+
+    public Boolean withdrawalUser(String userId,
+                                  String reason,
+                                  String password){
+
+
+        Optional<UserEntity> userInfo = userRepository.findById(userId);
+        String userPW = userInfo.get().getUserPassword();
+
+        if (password.equals(userPW)){ //실제 디비에서의 패스워드와 전달받은 패스워드가 동일한지 퐉인
+            try{
+                userRepository.deleteById(userId);
+                System.out.println("유저 삭제 완료");
+
+                //Reason 테이블에 퇴사 사유 모아두기
+                ReasonEntity reasonEntity = new ReasonEntity();
+                reasonEntity.setReason(reason);
+                reasonRepository.save(reasonEntity);
+                System.out.println("사유 저장 완료");
+
+                //기존의 구매 기록은 유저명만 unknown으로 변경하고 이후이에 데이터 수집에 활용하기
+                List<OrdersEntity> orderList = ordersRepository.findAllByUserId(userId);
+                System.out.println(orderList);
+
+                for (OrdersEntity order : orderList){
+                    OrdersEntity updateOrderEntity = order;
+                    updateOrderEntity.setUserId("unknown");
+
+                    ordersRepository.save(updateOrderEntity);
+                }
+                return true;
+            }catch (Exception error){
+                System.out.println(error.getMessage());
+                return false;
+            }
+
+
+
+        }else {// 동일하지 않으면 false 반환
+            return false;
+        }
+
     }
 }
