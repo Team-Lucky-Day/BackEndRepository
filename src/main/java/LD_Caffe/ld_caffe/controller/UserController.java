@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -81,7 +82,16 @@ public class UserController {
         return ResponseEntity.ok(ordersService.getOrderHistories(authentication.getName()));
     }
 
-
+    @PostMapping("/orderChart")
+    public ResponseEntity<Map<String, Map<String, Integer>>> getAllOrderInfo(Authentication authentication){
+        String userCode = authentication.getName();
+        System.out.println("유저 코드 : " + userCode);
+        List<Integer> userCodeList = ordersService.getAllOrderCode(userCode);
+        System.out.println("주문 리스트 >>> "+ userCodeList);
+        Map<String, Map<String, Integer>> result = ordersService.getMonthlyOrder(userCodeList);
+        System.out.println("Map >>> " + result);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 
     @PostMapping("/withdrawal")
     public ResponseEntity<Boolean> deleteUser(Authentication authentication,
@@ -97,22 +107,5 @@ public class UserController {
         return ResponseEntity.ok().body(result);
     }
 
-    private final ReasonRepository reasonRepository;
-    @PostMapping("/reason")
-    public ResponseEntity<Boolean> saveReason(@RequestBody WithdrawalDto dto,
-                                              Authentication authentication){
-        try {
-            System.out.println("User Name >>> "+authentication.getName());
-            ReasonEntity reasonEntity = new ReasonEntity();
-            reasonEntity.setReason(dto.getReason());
-            reasonRepository.save(reasonEntity);
-
-            return ResponseEntity.ok().body(true);
-        } catch(Exception error){
-            System.out.println("ERROR >>> "+error);
-            return ResponseEntity.status(404).build();
-        }
-
-    }
 
 }

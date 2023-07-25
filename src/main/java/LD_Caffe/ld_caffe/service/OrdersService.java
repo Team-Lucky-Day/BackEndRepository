@@ -1,6 +1,7 @@
 package LD_Caffe.ld_caffe.service;
 
 import LD_Caffe.ld_caffe.domain.DetailEntity;
+import LD_Caffe.ld_caffe.domain.MenuEntity;
 import LD_Caffe.ld_caffe.domain.OrdersEntity;
 import LD_Caffe.ld_caffe.dto.ChartDto;
 import LD_Caffe.ld_caffe.dto.DetailResponseDto;
@@ -48,6 +49,7 @@ public class OrdersService {
     }
 
     public List<OrderResponseDto> getOrderHistories(String userId){  // 주문목록 조회하는 메서드
+
         List<OrdersEntity> ordersEntityList = ordersRepository.findAllByUserId(userId); // 토큰에 있는 Id값으로 주문목록 조회
 
         if (ordersEntityList==null){  // 주문목록이 비어있다면 404 에러 발생
@@ -80,6 +82,7 @@ public class OrdersService {
                     .build();
             finalList.add(dto);
         }
+
         return finalList;
     }
 
@@ -100,4 +103,104 @@ public class OrdersService {
     }
 
 
+    public Map<String, Map<String, Integer>> getMonthlyOrder(List<Integer> orderCodes){
+        System.out.println("서비스 메서드 진입완료");
+
+        Map<String, Map<String, Integer>> monthlyOrder = new HashMap<>(); // 모든 값을 담을 HashMap 생성
+
+
+        try {
+
+
+
+            for (Integer code : orderCodes){ //주문코드 별 카테고리들의 개수를 카툰트해서 HashMap에 저장하기
+                // 주문코드에 해당하는 디테일 정보 가져오기
+                List<DetailEntity> orderInfo = detailRepository.findAllByOrdersCode(code);
+                System.out.println("디테일레포지토리 주문 정보들 가지고오기 성공!" + orderInfo);
+                Integer coffeeCount = 0;
+                Integer beverageCount = 0;
+                Integer dessertCount = 0;
+                Map<String, Integer> categoryOrder = new HashMap<>();
+
+
+                // 주문 날짜 가져와서 그중 월만 뽑아서 사용하기 => 달에 따른 카테고리별 수량을 체크하기 위함
+                Optional<OrdersEntity> ordersEntity = ordersRepository.findById(code);
+                Date orderDate = ordersEntity.get().getO_date();
+                Calendar date = Calendar.getInstance();
+                date.setTime(orderDate);
+                String month = String.valueOf(date.get(Calendar.MONTH) + 1); // 월만 따로 저장
+
+
+                System.out.println("날짜 구하기 완료 & 반복문 진입 직전");
+                // 디테일 정보
+                for (DetailEntity info : orderInfo){
+                    System.out.println("반복문 진입");
+                    Integer menuCode = info.getMenuCode();
+                    Optional<MenuEntity> menuEntity = menuRepository.findById(menuCode);
+                    String menuCategory = menuEntity.get().getMenuCategory();
+                    System.out.println("해당 메뉴의 카테고리 >>> "+ menuCategory);
+
+                    if (menuCategory.equals("coffee")) {
+                        coffeeCount += info.getDetailCount();
+                    } else if (menuCategory.equals("beverage")) {
+                        beverageCount += info.getDetailCount();
+                    }else {
+                        dessertCount += info.getDetailCount();
+                    }
+
+                    System.out.println("coffee count : " + coffeeCount);
+                    System.out.println("beverage count : " + beverageCount);
+                    System.out.println("dessert count : " + dessertCount);
+
+                }
+                if (monthlyOrder.containsKey(month)){ // 해당 달이 이미 존재 할 경우
+                    Map<String, Integer> items =  monthlyOrder.get(month);
+
+                    Integer finalCoffeeCount = coffeeCount;
+                    Integer finalBeverageCount = beverageCount;
+                    Integer finalDessertCount = dessertCount;
+
+                    items.forEach( (category, count) -> {
+                        if (category.equals("coffee")){
+                            items.put(category, count + finalCoffeeCount);
+                        } else if (category.equals("beverage")) {
+                            items.put(category, count + finalBeverageCount);
+                        }else {
+                            items.put(category, count + finalDessertCount);
+                        }
+
+                    });
+
+
+
+                }else { // 해당 달이 존재하지 않을 경우
+                    categoryOrder.put("coffee", coffeeCount);
+                    categoryOrder.put("beverage", beverageCount);
+                    categoryOrder.put("dessert", dessertCount);
+                    monthlyOrder.put(month, categoryOrder);
+                }
+
+            }
+
+
+            System.out.println("작업 완료!!");
+            return monthlyOrder;
+        }catch (Exception error)
+        {
+            System.out.println(error.getMessage());
+            return monthlyOrder;
+        }
+
+    }
+
+    public List<Integer> getAllOrderCode(String userCode) {
+        List<Integer> orderCodes = new ArrayList<>();
+
+        List<OrdersEntity> result = ordersRepository.findAllByUserId(userCode);
+        for (OrdersEntity orderInfo : result) {
+            orderCodes.add(orderInfo.getO_code());
+        }
+
+        return orderCodes;
+    }
 }
