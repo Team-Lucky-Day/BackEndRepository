@@ -14,7 +14,9 @@ import LD_Caffe.ld_caffe.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 import java.util.Optional;
@@ -129,5 +131,16 @@ public class UserService {
             return false;
         }
 
+    }
+    @PostMapping("/updateUserInfo")
+    public ResponseEntity<String> updateUserInfo(Authentication authentication,UserDto userDto){  // 유저 정보 수정 메서드
+        String userId = authentication.getName();
+        UserEntity updateEntity = UserEntity.toEntity(userDto);
+        CardEntity updateCardEntity = CardEntity.toCardEntity(userDto);
+        updateEntity.setUserId(userId);
+
+        userRepository.save(updateEntity);
+        cardRepository.save(updateCardEntity);
+        return ResponseEntity.ok().build();
     }
 }
