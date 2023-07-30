@@ -107,5 +107,9 @@ public class UserController {
         return ResponseEntity.ok().body(result);
     }
 
-
+    @PostMapping("/updateUserInfo") // User myPage Update 메서드
+    public ResponseEntity<String> updateUserInfo(Authentication authentication,UserDto userDto){
+        userService.updateUserInfo(authentication, userDto);
+        return ResponseEntity.ok().build();
+    }
 }

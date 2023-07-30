@@ -130,9 +130,8 @@ public class UserService {
         }else {// 동일하지 않으면 false 반환
             return false;
         }
-
     }
-    @PostMapping("/updateUserInfo")
+
     public ResponseEntity<String> updateUserInfo(Authentication authentication,UserDto userDto){  // 유저 정보 수정 메서드
         String userId = authentication.getName();
         UserEntity updateEntity = UserEntity.toEntity(userDto);
