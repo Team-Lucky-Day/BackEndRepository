@@ -16,6 +16,7 @@ public class MenuDto {
     private String content;
     private Integer price;
     private String imagePath;
+    private int menuCode;
 
     private byte[] imageBytes;
     private String imageType;

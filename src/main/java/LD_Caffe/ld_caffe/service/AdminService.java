@@ -86,6 +86,7 @@ public class AdminService {
             menuDto.setName(menu.getMenuName());
             menuDto.setContent(menu.getMenuContents());
             menuDto.setPrice(menu.getMenuPrice());
+            menuDto.setMenuCode(menuDto.getMenuCode());
 
             //경로를 가져와서 이미지를 바이트값으로 바꿔서 DTO에 해당 이미지에 대한 바이트값 넣어주기
             String imagePath = menu.getMenuImagePath();
