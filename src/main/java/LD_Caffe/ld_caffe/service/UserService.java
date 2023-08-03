@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -142,4 +143,52 @@ public class UserService {
         cardRepository.save(updateCardEntity);
         return ResponseEntity.ok().build();
     }
+
+
+    public List<Object> findUserInfo(String userCode){
+
+        Optional<UserEntity> getUserInfo = userRepository.findById(userCode);
+
+        if (getUserInfo.isPresent()){
+            List<Object> userInfoList = new ArrayList<>();
+
+            UserEntity userInfo = getUserInfo.get();
+            String userName = userInfo.getUserName();
+            String userEmail = userInfo.getUserEmail();
+            String userPassword = userInfo.getUserPassword();
+            String userPhoneNumber = userInfo.getUserPhone();
+            String userCardNum = userInfo.getUserCardNum();
+
+            // 리스트에 값 순서대로 넣기
+            userInfoList.add(userName);
+            userInfoList.add(userEmail);
+            userInfoList.add(userPassword);
+            userInfoList.add(userPhoneNumber);
+            userInfoList.add(userCardNum);
+
+            if (!userCardNum.isEmpty()){
+                Optional<CardEntity> getCardInfo = cardRepository.findById(userCardNum);
+
+                Integer cardPassword = getCardInfo.get().getCardPassword();
+                Integer cardCvc = getCardInfo.get().getCardCvc();
+                String cardDate = getCardInfo.get().getCardDate();
+                userInfoList.add(cardPassword);
+                userInfoList.add(cardCvc);
+                userInfoList.add(cardDate);
+            }else {
+                // 카드 정보가 없을 경우 빈 문자열 넘기기
+                userInfoList.add("");
+                userInfoList.add("");
+                userInfoList.add("");
+
+            }
+
+            return userInfoList;
+
+
+        }else {
+            return null;
+        }
+    }
+
 }

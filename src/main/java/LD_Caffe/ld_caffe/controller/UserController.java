@@ -7,6 +7,7 @@ import LD_Caffe.ld_caffe.service.FavoriteService;
 import LD_Caffe.ld_caffe.service.OrdersService;
 import LD_Caffe.ld_caffe.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.hibernate.type.TrueFalseType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -82,7 +83,7 @@ public class UserController {
         return ResponseEntity.ok(ordersService.getOrderHistories(authentication.getName()));
     }
 
-    @PostMapping("/orderChart")
+    @PostMapping("/orderChart") //주문 차트
     public ResponseEntity<Map<String, Map<String, Integer>>> getAllOrderInfo(Authentication authentication){
         String userCode = authentication.getName();
         System.out.println("유저 코드 : " + userCode);
@@ -93,7 +94,7 @@ public class UserController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PostMapping("/withdrawal")
+    @PostMapping("/withdrawal") // 회원 탈퇴
     public ResponseEntity<Boolean> deleteUser(Authentication authentication,
                                               @RequestBody WithdrawalDto deleteInfo){
         System.out.println("탈퇴 사유 : "+deleteInfo.getReason());
@@ -107,8 +108,26 @@ public class UserController {
         return ResponseEntity.ok().body(result);
     }
 
+    @PostMapping("/userInfo")
+    public ResponseEntity<List<Object>> AlluserInfo(Authentication authentication){
+        String userCode = authentication.getName();
+
+
+        List<Object> userInfoList = userService.findUserInfo(userCode);
+        if (userInfoList != null){
+            return new ResponseEntity<>(userInfoList, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+
+    }
+
     @PostMapping("/updateUserInfo") // User myPage Update 메서드
-    public ResponseEntity<String> updateUserInfo(Authentication authentication,UserDto userDto){
+    public ResponseEntity<String> updateUserInfo(Authentication authentication,
+                                                 @RequestBody UserDto userDto){
+        System.out.println("유저 이름 : "+userDto.getU_name());
+        System.out.println("유저 카드 번호 : "+userDto.getC_number());
         userService.updateUserInfo(authentication, userDto);
         return ResponseEntity.ok().build();
     }

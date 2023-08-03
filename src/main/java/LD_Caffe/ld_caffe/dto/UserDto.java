@@ -13,15 +13,14 @@ import lombok.Setter;
 @Setter
 public class UserDto {
 
-    private String u_id;
-
-    private String u_pw;
 
     private String u_name;
 
-    private String u_phone;
-
     private String u_email;
+
+    private String u_pw;
+
+    private String u_phone;
 
     private String c_number;
 
@@ -30,5 +29,7 @@ public class UserDto {
     private Integer cardCvc;
 
     private String cardDate;
+
+    private String u_id;
 
 }

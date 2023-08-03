@@ -20,6 +20,7 @@ public class FavoriteController {
 
     private final FavoriteService favoriteService;
 
-
+    @PostMapping("/enrollment")
+    //즐겨찾기 등록
 
 }
