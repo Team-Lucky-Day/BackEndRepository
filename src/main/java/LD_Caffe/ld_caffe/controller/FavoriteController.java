@@ -4,11 +4,11 @@ import LD_Caffe.ld_caffe.dto.FavoriteDto;
 import LD_Caffe.ld_caffe.service.FavoriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -22,5 +22,17 @@ public class FavoriteController {
 
     @PostMapping("/enrollment")
     //즐겨찾기 등록
+    public ResponseEntity<String> updateFavoriteMenu(@RequestParam Integer menuCode,
+                                                     Authentication authentication){
+
+        String userCode = authentication.getName();
+        Boolean isUpdateOk = favoriteService.enrollFavorite(menuCode, userCode);
+        if (isUpdateOk){
+            return ResponseEntity.ok("즐겨찾기 등록 완료");
+        }else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+    }
 
 }

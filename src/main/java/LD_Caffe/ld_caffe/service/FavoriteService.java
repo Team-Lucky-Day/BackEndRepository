@@ -39,4 +39,22 @@ public class FavoriteService {
         }
 
     }
+
+    public boolean enrollFavorite(Integer menuCode,
+                                  String userCode){
+
+        try{
+            FavoriteEntity newFavMenu = new FavoriteEntity();
+            newFavMenu.setMenuCode(menuCode);
+            newFavMenu.setUserCode(userCode);
+            favoriteRepository.save(newFavMenu);
+
+            return true;
+        }catch (Exception error){
+            System.out.println("ERROR : "+error);
+            return  false;
+        }
+
+
+    }
 }
